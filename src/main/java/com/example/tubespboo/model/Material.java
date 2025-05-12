@@ -1,6 +1,6 @@
 package com.example.tubespboo.model;
 
-public class Material {
+public class Material implements rateable {
     private int id,stock,ratingCount;
     private String name;
     private double totrating,price;
@@ -11,9 +11,14 @@ public class Material {
     public void updatePrice(double price){
         this.price = price;
     }
+    
     public void addRating(double totrating){
-        this.totrating = totrating;
-        this.ratingCount++;
+        if(totrating >= 1 && totrating <= 5 ){
+            this.totrating = totrating;
+            this.ratingCount++;
+        }else{
+            System.out.println("Rating harus antara 1 dan 5.");
+        } 
     }
     public double getAverageRating(){
         //exception disini ketika dia 0
