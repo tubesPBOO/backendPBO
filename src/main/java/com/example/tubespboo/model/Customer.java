@@ -8,7 +8,9 @@ public class Customer extends User {
     private String address;
     private String phoneNumber;
 
-    public Customer() {}
+    public Customer() {
+        super();
+    }
 
     public String getAddress() {
         return address;
