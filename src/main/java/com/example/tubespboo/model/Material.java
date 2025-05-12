@@ -1,9 +1,9 @@
 package com.example.tubespboo.model;
 
 public class Material {
-    private int id,stock;
+    private int id,stock,ratingCount;
     private String name;
-    private double rating,price;
+    private double totrating,price;
     
     public void updateStock(int stock){
         this.stock = stock;
@@ -11,10 +11,12 @@ public class Material {
     public void updatePrice(double price){
         this.price = price;
     }
-    public void addRating(double rating){
-        this.rating = rating;
+    public void addRating(double totrating){
+        this.totrating = totrating;
+        this.ratingCount++;
     }
     public double getAverageRating(){
-        return 0;
+        //exception disini ketika dia 0
+        return totrating / ratingCount;
     }
 }
