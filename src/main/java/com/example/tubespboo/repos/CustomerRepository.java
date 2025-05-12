@@ -1,0 +1,11 @@
+package com.example.tubespboo.repos;
+
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+import com.example.tubespboo.model.Customer;
+
+public interface CustomerRepository extends MongoRepository<Customer, String> {
+    Customer findByNameAndPassword(String name, String password);
+    boolean existsByEmail(String email); 
+    boolean existById(String id);
+}
