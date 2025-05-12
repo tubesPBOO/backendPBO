@@ -40,10 +40,7 @@ public class Customer extends User {
         this.phoneNumber = phoneNumber;
     }
 
-    @Override
-    public void viewDashboard() {
-        
-    }
+
 
     public void ratingTukang(int id, double rate) {
        

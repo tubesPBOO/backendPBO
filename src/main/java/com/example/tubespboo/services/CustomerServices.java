@@ -46,7 +46,10 @@ public class CustomerServices extends UserServices {
             System.out.println("No user is logged in.");
         }
     }
-
+    @Override
+    public void updateProfile() {
+        
+    }
     public Customer getLoggedInCustomer() {
         return loggedInCustomer;
     }
