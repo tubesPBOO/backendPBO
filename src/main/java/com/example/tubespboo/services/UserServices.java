@@ -11,7 +11,7 @@ public abstract class UserServices implements AuthServices {
     }
 
     public abstract void viewDashboard();
-    public abstract void u
+    public abstract void updateProfile();
 }
 
 
