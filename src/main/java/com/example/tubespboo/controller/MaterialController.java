@@ -1,6 +1,7 @@
 package com.example.tubespboo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -29,5 +30,17 @@ public class MaterialController {
     public void updateMaterialStock(@PathVariable String name, @RequestBody Material updatedMaterial) {
         adminServices.updateMaterialStock(name,updatedMaterial);
     }
+    @PutMapping("/price/{name}")
+    public void updateMaterialPrice(@PathVariable String name, @RequestBody Material updatedMaterial) {
+        adminServices.updatePrice(name, updatedMaterial.getPrice());
+    }
 
+    @GetMapping("/ratingavg/{name}")
+    public double getAverageRating(@PathVariable String name) {
+       return materialService.getAverageRating(name);
+    }
+    @PostMapping("/rating/{name}")
+    public void addRatings(@PathVariable String name, @RequestBody Material material) {
+        materialService.addRating(name, material.getTotrating());
+    }
 }

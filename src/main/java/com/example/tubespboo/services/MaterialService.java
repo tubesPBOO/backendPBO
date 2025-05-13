@@ -14,10 +14,11 @@ public class MaterialService {
     @Autowired
     private MaterialRepository materialRepository;
     
-    public void addRating(String materialId, double rating) {
-        Material material = materialRepository.findById(materialId)
-                .orElseThrow(() -> new RuntimeException("Material not found"));
-
+    public void addRating(String name, double rating) {
+        Material material = materialRepository.findByName(name);
+        if (material == null) {
+            throw new RuntimeException("Material with name '" + name + "' not found");
+        }
         material.addRating(rating);
         materialRepository.save(material);
     }
@@ -40,10 +41,11 @@ public class MaterialService {
         materialRepository.save(material);
     }
 
-    public double getAverageRating(String materialId) {
-        Material material = materialRepository.findById(materialId)
-                .orElseThrow(() -> new RuntimeException("Material not found"));
-
+    public double getAverageRating(String name) {
+       Material material = materialRepository.findByName(name);
+        if (material == null) {
+            throw new RuntimeException("Material with name '" + name + "' not found");
+        }
         if (material.getRatingCount() == 0) return 0;
 
         return material.getTotrating() / material.getRatingCount();

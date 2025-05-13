@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.example.tubespboo.interfacee.Rateable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Document(collection = "materials") 
 public class Material implements Rateable {
@@ -66,6 +67,7 @@ public class Material implements Rateable {
         this.price = price;
     }
 
+    @JsonIgnore
     @Override
     public double getAverage() {
         if (ratingCount == 0) {
