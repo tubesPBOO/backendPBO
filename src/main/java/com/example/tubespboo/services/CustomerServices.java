@@ -69,7 +69,7 @@ public class CustomerServices extends UserServices {
         return customerRepository.findById(id).orElseThrow(()-> new ResourceNotFound("Customer with ID " + id + " not found."));
     }
     public void deleteCustomerById(String id){
-        if(!customerRepository.existById(id)){
+        if(!customerRepository.existsById(id)){
             throw new ResourceNotFound("Customer with ID " + id + " not found.");
 
         }

@@ -1,12 +1,15 @@
 package com.example.tubespboo.model;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.example.tubespboo.interfacee.Rateable;
 
 @Document(collection = "materials") 
 public class Material implements Rateable {
-    private int id;
+    @Id
+    private String id;
+
     private int stock;
     private int ratingCount;
     private String name;
@@ -15,11 +18,11 @@ public class Material implements Rateable {
 
     public Material() {}
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
