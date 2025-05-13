@@ -25,9 +25,9 @@ public class MaterialController {
         return adminServices.addMaterial(material);
     }
 
-    @PutMapping("/name/{name}")
+    @PutMapping("/stock/{name}")
     public void updateMaterialStock(@PathVariable String name, @RequestBody Material updatedMaterial) {
-        adminServices.updateMaterialStock(updatedMaterial);
+        adminServices.updateMaterialStock(name,updatedMaterial);
     }
 
 }

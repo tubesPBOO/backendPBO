@@ -30,8 +30,8 @@ public class AdminServices extends UserServices {
 
         return materialRepository.save(material);
     }
-    public void updateMaterialStock(Material m){
-        materialService.updateStock(m.getId(), m.getStock());
+    public void updateMaterialStock(String name,Material m){
+        materialService.updateStock(name, m.getStock());
     }
     public void updatePrice(String id,double price){
         materialService.updatePrice(id, price);
