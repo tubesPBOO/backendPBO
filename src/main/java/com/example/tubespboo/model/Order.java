@@ -9,8 +9,13 @@ public class Order {
     private List<Material> materials;
     private List<Tukang> tukangs;
 
-    public double calculateTotal() {
+    public order(){
+        this.materials = new arrayList<>();
+        this.tukangs = new arrayList<>();
+    }
 
+    public double calculateTotal() {
+        
     }
 
     public void addMaterial() {
