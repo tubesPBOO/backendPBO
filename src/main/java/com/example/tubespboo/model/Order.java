@@ -9,9 +9,9 @@ public class Order {
     private List<Material> materials;
     private List<Tukang> tukangs;
 
-    public double calculateTotal() {
+    //public double calculateTotal() {
 
-    }
+    //}
 
     public void addMaterial() {
 

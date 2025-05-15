@@ -1,5 +1,7 @@
 package com.example.tubespboo.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -64,16 +66,25 @@ public class CustomerServices extends UserServices {
 
         return customerRepository.save(customer);
     }
-
-    public Customer getCustomerById(String id) {
-        return customerRepository.findById(id).orElseThrow(()-> new ResourceNotFound("Customer with ID " + id + " not found."));
+    public List<Customer> getAllCustomers() {
+        return customerRepository.findAll();
     }
-    public void deleteCustomerById(String id){
-        if(!customerRepository.existsById(id)){
-            throw new ResourceNotFound("Customer with ID " + id + " not found.");
 
+    public Customer getCustomerName(String name) {
+        Customer cus = customerRepository.findByName(name);
+        if (cus == null ){
+            throw new ResourceNotFound("Customer with Name " + name + " not found.");
+        }else{
+            return cus;
         }
-        customerRepository.deleteById(id);
+    }
+    public void deleteCustomerByName(String name){
+        Customer cus = customerRepository.findByName(name);
+        if (cus == null ){
+            throw new ResourceNotFound("Customer with Name " + name + " not found.");
+        }else{
+            customerRepository.deleteByName(name);
+        }
     }
 }
 
