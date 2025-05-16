@@ -30,7 +30,6 @@ public class AuthController {
             authService.login(loginRequest.getName(), loginRequest.getPass());
 
             if (authService.isAdminLoggedIn()) {
-                // Create authentication token with ADMIN role
                 Authentication auth = new UsernamePasswordAuthenticationToken(
                     loginRequest.getName(), null, 
                     AuthorityUtils.createAuthorityList("ROLE_ADMIN")
@@ -38,7 +37,6 @@ public class AuthController {
                 SecurityContextHolder.getContext().setAuthentication(auth);
                 return ResponseEntity.ok("Logged in as Admin");
             } else if (authService.isCustomerLoggedIn()) {
-                // Create authentication token with CUSTOMER role
                 Authentication auth = new UsernamePasswordAuthenticationToken(
                     loginRequest.getName(), null, 
                     AuthorityUtils.createAuthorityList("ROLE_CUSTOMER")
@@ -56,7 +54,7 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<String> logout() {
         authService.logout();
-        SecurityContextHolder.clearContext(); // Clear Spring Security context
+        SecurityContextHolder.clearContext(); 
         return ResponseEntity.ok("Logged out");
     }
 }
