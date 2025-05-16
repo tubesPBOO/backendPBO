@@ -67,4 +67,10 @@ public class AuthServiceImpl implements AuthServices {
             System.out.println("No user is currently logged in.");
         }
     }
+
+    @Override
+    public boolean isTukangLoggedIn() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'isTukangLoggedIn'");
+    }
 }

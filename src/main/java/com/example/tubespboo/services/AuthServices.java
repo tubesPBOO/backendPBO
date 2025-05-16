@@ -6,4 +6,5 @@ public interface AuthServices {
     void logout();
     boolean isAdminLoggedIn();
     boolean isCustomerLoggedIn();
+    boolean isTukangLoggedIn();
 }
