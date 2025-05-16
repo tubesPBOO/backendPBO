@@ -3,6 +3,11 @@ package com.example.tubespboo.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.tubespboo.exception.BadRequestException;
@@ -12,48 +17,31 @@ import com.example.tubespboo.model.Customer;
 import com.example.tubespboo.repos.CustomerRepository;
 
 @Service
-public class CustomerServices extends UserServices {
+public class CustomerServices extends UserServices implements UserDetailsService{
 
     @Autowired
     private CustomerRepository customerRepository;
-
-    private Customer loggedInCustomer;
-
-    @Override
-    public void login(String name, String pass) {
-        Customer customer = customerRepository.findByNameAndPassword(name, pass);
-        if (customer != null) {
-            loggedInCustomer = customer;
-            System.out.println("Login successful! Welcome, " + customer.getName());
-        } else {
-            System.out.println("Login failed. Invalid name or password.");
+   
+    public Customer getLoggedInCustomer() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof Customer) {
+            return (Customer) authentication.getPrincipal();
         }
+        return null;
     }
-
-    @Override
-    public void logout() {
-        if (loggedInCustomer != null) {
-            System.out.println("Logged out: " + loggedInCustomer.getName());
-            loggedInCustomer = null;
-        } else {
-            System.out.println("No user is currently logged in.");
-        }
-    }
-
     @Override
     public void viewDashboard() {
+        Customer loggedInCustomer = getLoggedInCustomer();
         if (loggedInCustomer != null) {
             System.out.println("Welcome to your dashboard, " + loggedInCustomer.getName());
         } else {
             System.out.println("No user is logged in.");
         }
     }
+
     @Override
     public void updateProfile() {
         
-    }
-    public Customer getLoggedInCustomer() {
-        return loggedInCustomer;
     }
 
     public Customer saveCustomer(Customer customer) {
@@ -85,6 +73,14 @@ public class CustomerServices extends UserServices {
         }else{
             customerRepository.deleteByName(name);
         }
+    }
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Customer customer = customerRepository.findByName(username);
+        if (customer == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+        return customer;
     }
 }
 

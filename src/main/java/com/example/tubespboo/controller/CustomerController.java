@@ -2,7 +2,6 @@ package com.example.tubespboo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +21,7 @@ public class CustomerController {
 
     @PostMapping
     public Customer createCustomer(@RequestBody Customer customer) {
+        customer.setRole("ROLE_CUSTOMER");
         return customerService.saveCustomer(customer);
     }
 
@@ -33,10 +33,4 @@ public class CustomerController {
     public List<Customer> getAllCustomers() {
         return customerService.getAllCustomers();
     }
-
-    @DeleteMapping("/delete/{name}")
-    public void deleteCustomer(@PathVariable String name){
-        customerService.deleteCustomerByName(name);
-    }
-
 }

@@ -2,6 +2,8 @@
 
 package com.example.tubespboo.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +42,9 @@ public class MaterialService {
         material.setPrice(newPrice);
         materialRepository.save(material);
     }
-
+    public List<Material> getAllMaterial() {
+        return materialRepository.findAll();
+    }
     public double getAverageRating(String name) {
        Material material = materialRepository.findByName(name);
         if (material == null) {
