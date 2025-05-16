@@ -1,6 +1,7 @@
 package com.example.tubespboo.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.tubespboo.model.Admin;
@@ -17,28 +18,31 @@ public class AuthServiceImpl implements AuthServices {
     @Autowired
     private AdminRepository adminRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     private Customer loggedInCustomer;
     private Admin loggedInAdmin;
 
     @Override
-    public void login(String name, String pass) {
-        Customer customer = customerRepository.findByNameAndPassword(name, pass);
-        if (customer != null) {
+    public void login(String name, String rawPassword) {
+        Customer customer = customerRepository.findByName(name);
+        if (customer != null && passwordEncoder.matches(rawPassword, customer.getPassword())) {
             loggedInCustomer = customer;
-            loggedInAdmin = null;  
+            loggedInAdmin = null;
             System.out.println("Login successful! Welcome, Customer " + customer.getName());
             return;
         }
 
-        Admin admin = adminRepository.findByNameAndPassword(name, pass);
-        if (admin != null) {
+        Admin admin = adminRepository.findByName(name);
+        if (admin != null && passwordEncoder.matches(rawPassword, admin.getPassword())) {
             loggedInAdmin = admin;
-            loggedInCustomer = null; 
+            loggedInCustomer = null;
             System.out.println("Login successful! Welcome, Admin " + admin.getName());
             return;
         }
 
-        throw new RuntimeException("Login failed. Invalid name or password.");
+        throw new RuntimeException("Invalid name or password");
     }
 
     @Override

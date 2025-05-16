@@ -19,7 +19,8 @@ public class CustomerController {
     @Autowired
     private CustomerServices customerService;
 
-    @PostMapping
+
+    @PostMapping("/public")
     public Customer createCustomer(@RequestBody Customer customer) {
         customer.setRole("ROLE_CUSTOMER");
         return customerService.saveCustomer(customer);
