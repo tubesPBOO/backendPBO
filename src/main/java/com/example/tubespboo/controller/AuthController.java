@@ -27,9 +27,9 @@ public class AuthController {
             authService.login(loginRequest.getName(), loginRequest.getPass());
 
             if (authService.isAdminLoggedIn()) {
-                return ResponseEntity.ok("Logged in as Admin");
+                return ResponseEntity.ok("Logged in as Admin, Welcome "+loginRequest.getName());
             } else if (authService.isCustomerLoggedIn()) {
-                return ResponseEntity.ok("Logged in as Customer");
+                return ResponseEntity.ok("Logged in as Customer, Welcome "+loginRequest.getName());
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
             }
