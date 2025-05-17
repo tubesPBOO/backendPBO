@@ -12,7 +12,7 @@ import com.example.tubespboo.repos.AdminRepository;
 import com.example.tubespboo.repos.MaterialRepository;
 
 @Service
-public class AdminServices extends UserServices {
+public class AdminServices extends UserServices{
     @Autowired
     private MaterialRepository materialRepository;
     @Autowired

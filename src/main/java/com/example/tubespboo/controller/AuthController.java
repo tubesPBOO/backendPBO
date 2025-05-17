@@ -30,6 +30,8 @@ public class AuthController {
                 return ResponseEntity.ok("Logged in as Admin, Welcome "+loginRequest.getName());
             } else if (authService.isCustomerLoggedIn()) {
                 return ResponseEntity.ok("Logged in as Customer, Welcome "+loginRequest.getName());
+            } else if (authService.isTukangLoggedIn()) {
+                return ResponseEntity.ok("Logged in as Tukang, Welcome "+loginRequest.getName());
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
             }

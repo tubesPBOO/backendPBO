@@ -20,9 +20,8 @@ public class CustomerController {
     private CustomerServices customerService;
 
 
-    @PostMapping("/public")
+    @PostMapping("/register")
     public Customer createCustomer(@RequestBody Customer customer) {
-        customer.setRole("ROLE_CUSTOMER");
         return customerService.saveCustomer(customer);
     }
 

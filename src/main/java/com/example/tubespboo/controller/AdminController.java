@@ -21,7 +21,8 @@ public class AdminController {
 
     @Autowired
     private AdminServices adminServices;
-
+    // @Autowired
+    // private TukangService tukangService;
     @DeleteMapping("/delete-customer/{name}")
     public void deleteCustomer(@PathVariable String name){
         customerService.deleteCustomerByName(name);

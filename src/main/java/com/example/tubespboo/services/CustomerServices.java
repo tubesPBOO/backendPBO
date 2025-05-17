@@ -5,9 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.tubespboo.exception.BadRequestException;
@@ -17,7 +14,7 @@ import com.example.tubespboo.model.Customer;
 import com.example.tubespboo.repos.CustomerRepository;
 
 @Service
-public class CustomerServices extends UserServices implements UserDetailsService{
+public class CustomerServices extends UserServices {
 
     @Autowired
     private CustomerRepository customerRepository;
@@ -51,13 +48,28 @@ public class CustomerServices extends UserServices implements UserDetailsService
         if (customer.getEmail() == null || customer.getEmail().isEmpty()) {
             throw new BadRequestException("Email is required.");
         }
-
+        validatePassword(customer.getPassword());
+        if (customer.getRole() == null || customer.getRole().isEmpty()) {
+            customer.setRole("ROLE_CUSTOMER");
+        }
         return customerRepository.save(customer);
     }
+
     public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
     }
 
+    private void validatePassword(String password) {
+        if (password.length() < 8) {
+            throw new BadRequestException("Password must be at least 8 characters long.");
+        }
+        if (!password.matches(".*[A-Z].*")) {
+            throw new BadRequestException("Password must contain at least one uppercase letter.");
+        }
+        if (!password.matches(".*\\d.*")) {
+            throw new BadRequestException("Password must contain at least one digit.");
+        }
+    }
     public Customer getCustomerName(String name) {
         Customer cus = customerRepository.findByName(name);
         if (cus == null ){
@@ -74,14 +86,7 @@ public class CustomerServices extends UserServices implements UserDetailsService
             customerRepository.deleteByName(name);
         }
     }
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Customer customer = customerRepository.findByName(username);
-        if (customer == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
-        return customer;
-    }
+
 }
 
 

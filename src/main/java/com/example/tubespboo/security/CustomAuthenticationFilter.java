@@ -2,7 +2,6 @@ package com.example.tubespboo.security;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -18,33 +17,47 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private AuthServiceImpl authService;
+    private final AuthServiceImpl authService;
+
+    public CustomAuthenticationFilter(AuthServiceImpl authService) {
+        this.authService = authService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        
-        if (request.getRequestURI().startsWith("/auth/login")) {
+
+        String uri = request.getRequestURI();
+        System.out.println("Request URI: " + uri);
+        if (uri.startsWith("/api/customers/register") || 
+            uri.startsWith("/api/tukang/register") || 
+            uri.startsWith("/auth/")) {
             filterChain.doFilter(request, response);
             return;
         }
-        
+
         if (authService.isAdminLoggedIn()) {
             Authentication auth = new UsernamePasswordAuthenticationToken(
-                "admin", null, 
+                "admin", null,
                 AuthorityUtils.createAuthorityList("ROLE_ADMIN")
             );
             SecurityContextHolder.getContext().setAuthentication(auth);
         } 
         else if (authService.isCustomerLoggedIn()) {
             Authentication auth = new UsernamePasswordAuthenticationToken(
-                "customer", null, 
+                "customer", null,
                 AuthorityUtils.createAuthorityList("ROLE_CUSTOMER")
             );
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
-        
+        else if (authService.isTukangLoggedIn()) {
+            Authentication auth = new UsernamePasswordAuthenticationToken(
+                "tukang", null,
+                AuthorityUtils.createAuthorityList("ROLE_TUKANG")
+            );
+            SecurityContextHolder.getContext().setAuthentication(auth);
+        }
+
         filterChain.doFilter(request, response);
     }
 }

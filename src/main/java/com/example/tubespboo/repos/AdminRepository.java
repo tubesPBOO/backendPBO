@@ -8,4 +8,5 @@ public interface AdminRepository extends MongoRepository<Admin, String> {
     Admin findByNameAndPassword(String name, String password);
     boolean existsByEmail(String email); 
     Admin findByName(String name);
+    Admin findByEmail(String username);
 }
