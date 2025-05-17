@@ -4,9 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,18 +27,8 @@ public class AuthController {
             authService.login(loginRequest.getName(), loginRequest.getPass());
 
             if (authService.isAdminLoggedIn()) {
-                Authentication auth = new UsernamePasswordAuthenticationToken(
-                    loginRequest.getName(), null, 
-                    AuthorityUtils.createAuthorityList("ROLE_ADMIN")
-                );
-                SecurityContextHolder.getContext().setAuthentication(auth);
                 return ResponseEntity.ok("Logged in as Admin");
             } else if (authService.isCustomerLoggedIn()) {
-                Authentication auth = new UsernamePasswordAuthenticationToken(
-                    loginRequest.getName(), null, 
-                    AuthorityUtils.createAuthorityList("ROLE_CUSTOMER")
-                );
-                SecurityContextHolder.getContext().setAuthentication(auth);
                 return ResponseEntity.ok("Logged in as Customer");
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
@@ -50,6 +37,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
+
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout() {
