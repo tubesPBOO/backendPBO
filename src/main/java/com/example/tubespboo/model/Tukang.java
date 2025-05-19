@@ -1,20 +1,23 @@
 package com.example.tubespboo.model;
 
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.example.tubespboo.interfacee.Rateable;
-public class Tukang implements Rateable{
-    private int id;
-    private String name;
+
+@Document(collection = "tukang") 
+public class Tukang extends User implements Rateable, UserDetails{
     private boolean availability;
     private double totrating;
     private int ratingCount;
     private String phoneNumber;
     
-    public void setName(String name){
-        this.name = name;
-    }
-    public void setId(int id){
-        this.id = id;
-    }
+
     public void setAvailability(boolean availability){
         this.availability = availability;
     }
@@ -25,12 +28,7 @@ public class Tukang implements Rateable{
     public boolean getAvailability(){
         return availability;
     }
-    public String getName(){
-        return name;
-    }
-    public int getId(){
-        return id;
-    }
+
     public String getPhoneNumber(){
         return phoneNumber;
     }
@@ -49,9 +47,21 @@ public class Tukang implements Rateable{
     @Override
     public double getAverage() {
         if (ratingCount==0){
-            throw new ArithmeticException("No ratings yet.");
+            return 0.0;
         }else{
             return totrating/ratingCount;
         }
+    }
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+       return List.of(new SimpleGrantedAuthority(getRole()));
+    }
+    @Override
+    public String getPassword() {
+        return super.getPassword();
+    }
+    @Override
+    public String getUsername() {
+        return super.getName();
     }
 }

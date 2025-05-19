@@ -7,4 +7,7 @@ import com.example.tubespboo.model.Customer;
 public interface CustomerRepository extends MongoRepository<Customer, String> {
     Customer findByNameAndPassword(String name, String password);
     boolean existsByEmail(String email); 
+    Customer findByName(String name);
+    Customer findByEmail(String username);
+    void deleteByName(String name);
 }

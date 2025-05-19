@@ -1,16 +1,16 @@
 package com.example.tubespboo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.tubespboo.model.Material;
-import com.example.tubespboo.services.AdminServices;
 import com.example.tubespboo.services.MaterialService;
 
 @RestController
@@ -19,22 +19,11 @@ import com.example.tubespboo.services.MaterialService;
 public class MaterialController {
     @Autowired
     private MaterialService materialService;
-    @Autowired
-    private AdminServices adminServices;
-    @PostMapping
-    public Material createMaterial(@RequestBody Material material) {
-        return adminServices.addMaterial(material);
+    
+    @GetMapping
+    public List<Material> getAllMaterials() {
+        return materialService.getAllMaterial();
     }
-
-    @PutMapping("/stock/{name}")
-    public void updateMaterialStock(@PathVariable String name, @RequestBody Material updatedMaterial) {
-        adminServices.updateMaterialStock(name,updatedMaterial);
-    }
-    @PutMapping("/price/{name}")
-    public void updateMaterialPrice(@PathVariable String name, @RequestBody Material updatedMaterial) {
-        adminServices.updatePrice(name, updatedMaterial.getPrice());
-    }
-
     @GetMapping("/ratingavg/{name}")
     public double getAverageRating(@PathVariable String name) {
        return materialService.getAverageRating(name);

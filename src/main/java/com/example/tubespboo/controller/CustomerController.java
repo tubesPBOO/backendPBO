@@ -1,4 +1,6 @@
 package com.example.tubespboo.controller;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,13 +19,18 @@ public class CustomerController {
     @Autowired
     private CustomerServices customerService;
 
-    @PostMapping
+
+    @PostMapping("/register")
     public Customer createCustomer(@RequestBody Customer customer) {
         return customerService.saveCustomer(customer);
     }
 
-    @GetMapping("/{id}")
-    public Customer getCustomer(@PathVariable String id) {
-        return customerService.getCustomerById(id);
+    @GetMapping("/{name}")
+    public Customer getCustomer(@PathVariable String name) {
+        return customerService.getCustomerName(name);
+    }
+    @GetMapping
+    public List<Customer> getAllCustomers() {
+        return customerService.getAllCustomers();
     }
 }
