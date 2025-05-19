@@ -2,12 +2,16 @@ package com.example.tubespboo.model;
 
 import java.util.Date;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "orderDetails")
 
 public class OrderDetails {
-    private int orderId;
+    @Id
+    private Integer id;
+
+    private Order order;
     private int payId;
     private int deliverId;
     private String payMethod;
@@ -19,14 +23,16 @@ public class OrderDetails {
 
     public OrderDetails() {}
 
+    public void setOrder(Order order){
+        this.order = order;
+    }
     public int getOrderId() {
-        return orderId;
+        return id;
     }
 
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
+    public void setId(Integer id) {
+        this.id = id;
     }
-
     public int getPayId() {
         return payId;
     }
@@ -92,7 +98,7 @@ public class OrderDetails {
     }
 
     public void showOrderDetail() {
-        System.out.println("Order ID: " + orderId);
+        System.out.println("Order ID: " + order.getId());
         System.out.println("Pay Method: " + payMethod);
         System.out.println("Pay Date: " + payDate);
         System.out.println("Delivery Address: " + deliveryAddress);
@@ -100,6 +106,6 @@ public class OrderDetails {
         System.out.println("Status: " + status);
         System.out.println("Delivery Status: " + deliveryStatus);
     }
-    
+
 
 }

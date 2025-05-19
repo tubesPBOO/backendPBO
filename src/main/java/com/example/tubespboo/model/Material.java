@@ -36,7 +36,12 @@ public class Material implements Rateable {
     }
 
     public int getRatingCount() {
-        return ratingCount;
+        if (ratingCount==0){
+            return 0;
+        }else{
+            return ratingCount;
+        }
+        
     }
 
     public void setRatingCount(int ratingCount) {
@@ -52,7 +57,12 @@ public class Material implements Rateable {
     }
 
     public double getTotrating() {
-        return totrating;
+        if (totrating==0){
+            return 0.0;
+        }else{
+           return totrating;
+        }
+        
     }
 
     public void setTotrating(double totrating) {
@@ -71,7 +81,7 @@ public class Material implements Rateable {
     @Override
     public double getAverage() {
         if (ratingCount == 0) {
-            throw new ArithmeticException("No ratings yet.");
+            return 0.0;
         }
         return totrating / ratingCount;
     }

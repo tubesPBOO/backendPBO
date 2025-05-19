@@ -13,10 +13,10 @@ import com.example.tubespboo.repos.TukangRepository;
 
 @Service("authServiceImpl")
 public class AuthServiceImpl implements AuthServices {
-    
+
     @Autowired
     private CustomerRepository customerRepository;
-    
+
     @Autowired
     private AdminRepository adminRepository;
     @Autowired
@@ -48,7 +48,7 @@ public class AuthServiceImpl implements AuthServices {
         }
         Tukang tukang = tukangRepository.findByName(name);
         if (tukang != null && passwordEncoder.matches(rawPassword, tukang.getPassword())) {
-            loggedInAdmin = admin;
+            loggedInTukang = tukang;
             loggedInCustomer = null;
             System.out.println("Login successful! Welcome, Tukang " + tukang.getName());
             return;
@@ -71,19 +71,25 @@ public class AuthServiceImpl implements AuthServices {
         if (loggedInCustomer != null) {
             System.out.println("Logged out: " + loggedInCustomer.getName());
             loggedInCustomer = null;
-        } else if(loggedInAdmin != null) {
+        } else if (loggedInAdmin != null) {
             System.out.println("Logged out: " + loggedInAdmin.getName());
             loggedInAdmin = null;
-        } else if(loggedInAdmin != null){
+        } else if (loggedInAdmin != null) {
             System.out.println("Logged out: " + loggedInTukang.getName());
             loggedInTukang = null;
-        }else {
+        } else {
             System.out.println("No user is currently logged in.");
         }
     }
 
     @Override
     public boolean isTukangLoggedIn() {
-        return loggedInTukang!= null;
+        return loggedInTukang != null;
     }
+
+    public Customer getLoggedInCustomer() {
+        return loggedInCustomer;
+
+    }
+
 }

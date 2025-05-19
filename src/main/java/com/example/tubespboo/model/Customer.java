@@ -72,4 +72,11 @@ public class Customer extends User implements UserDetails {
     public String getPassword() {
         return super.getPassword();
     }
+    public List<Order> getOrders() {
+    return orders;
+}
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
 }

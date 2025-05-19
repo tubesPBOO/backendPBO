@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.example.tubespboo.model.Customer;
 import com.example.tubespboo.services.AuthServiceImpl;
 
 import jakarta.servlet.FilterChain;
@@ -44,8 +45,9 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(auth);
         } 
         else if (authService.isCustomerLoggedIn()) {
+            Customer customer = authService.getLoggedInCustomer();
             Authentication auth = new UsernamePasswordAuthenticationToken(
-                "customer", null,
+                customer, null,
                 AuthorityUtils.createAuthorityList("ROLE_CUSTOMER")
             );
             SecurityContextHolder.getContext().setAuthentication(auth);

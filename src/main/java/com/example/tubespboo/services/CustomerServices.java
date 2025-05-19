@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.tubespboo.exception.BadRequestException;
@@ -18,7 +19,9 @@ public class CustomerServices extends UserServices {
 
     @Autowired
     private CustomerRepository customerRepository;
-   
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     public Customer getLoggedInCustomer() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof Customer) {
@@ -48,6 +51,9 @@ public class CustomerServices extends UserServices {
         if (customer.getEmail() == null || customer.getEmail().isEmpty()) {
             throw new BadRequestException("Email is required.");
         }
+        validatePassword(customer.getPassword());
+
+        customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         validatePassword(customer.getPassword());
         if (customer.getRole() == null || customer.getRole().isEmpty()) {
             customer.setRole("ROLE_CUSTOMER");

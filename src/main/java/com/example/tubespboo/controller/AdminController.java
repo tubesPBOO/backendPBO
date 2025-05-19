@@ -28,7 +28,7 @@ public class AdminController {
         customerService.deleteCustomerByName(name);
     }
 
-    @PostMapping
+    @PostMapping("/materials")
     public Material createMaterial(@RequestBody Material material) {
         return adminServices.addMaterial(material);
     }

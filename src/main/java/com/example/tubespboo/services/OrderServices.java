@@ -1,0 +1,84 @@
+package com.example.tubespboo.services;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import com.example.tubespboo.model.Customer;
+import com.example.tubespboo.model.Material;
+import com.example.tubespboo.model.Order;
+import com.example.tubespboo.model.OrderDetails;
+import com.example.tubespboo.repos.CustomerRepository;
+import com.example.tubespboo.repos.MaterialRepository;
+import com.example.tubespboo.repos.OrderDetailsRepository;
+import com.example.tubespboo.repos.OrderRepository;
+import com.example.tubespboo.utils.Util;
+
+@Service
+public class OrderServices {
+
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private OrderDetailsRepository orderDetailsRepository;
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
+    private MaterialRepository materialRepository;
+
+    public Order addOrder(Order order) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Material> materials = order.getMaterials();
+
+        if (!(principal instanceof Customer)) {
+            throw new RuntimeException("Current user is not a customer");
+        }
+
+        Customer customer = (Customer) principal;
+
+        // Replace input materials with fully loaded ones from the DB
+        List<Material> resolvedMaterials = materials.stream().map(m -> {
+            Material found = materialRepository.findByName(m.getName());
+            if (found == null) {
+                throw new RuntimeException("Material not found: " + m.getName());
+            }
+            return found;
+        }).collect(Collectors.toList());
+
+        order.setMaterials(resolvedMaterials); 
+        order.calculateTotal(); 
+
+        orderRepository.save(order);
+
+        if (customer.getOrders() == null) {
+            customer.setOrders(new ArrayList<>());
+        }
+        customer.getOrders().add(order);
+        customerRepository.save(customer);
+
+        OrderDetails details = new OrderDetails();
+        details.setOrder(order);
+        details.setId(order.getId());
+        details.setPayDate(new Date());
+        details.setDeliveryAddress("Not provided");
+        details.setTrackingNumber(Util.generateRandomTrackingNumber());
+        details.setStatus("Pending");
+        details.setDeliveryStatus("Not delivered");
+        details.setPayId(Util.generateRandomId());
+        details.setDeliverId(Util.generateRandomId());
+        details.setPayMethod("Not yet paid");
+
+        orderDetailsRepository.save(details);
+
+        return order;
+    }
+}
+
