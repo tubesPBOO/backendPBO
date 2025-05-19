@@ -22,6 +22,12 @@ public class Order {
         return 0.0;
     }
 
+    // public order(){
+        // this.materials = new arrayList<>();
+        // this.tukangs = new arrayList<>();
+    // }
+
+
     public void addMaterial(Material material) {
         this.materials.add(material);
     }
