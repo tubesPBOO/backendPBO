@@ -13,6 +13,7 @@ public class Customer extends User implements UserDetails {
 
     private String address;
     private String phoneNumber;
+    private List<Order> orders;
 
     public Customer() {
         super();
