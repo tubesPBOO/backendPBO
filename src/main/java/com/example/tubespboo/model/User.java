@@ -1,17 +1,20 @@
 package com.example.tubespboo.model;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
-@Document(collection = "users") 
+@Document(collection = "users")
 public abstract class User {
+
     @Id
     private String id;
     private String name;
     private String email;
     private String password;
     private String role;
-    public User() {}
+
+    public User() {
+    }
 
     public String getId() {
         return id;
@@ -44,12 +47,12 @@ public abstract class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
     public String getRole() {
-    return role;
-}
+        return role;
+    }
 
     public void setRole(String role) {
         this.role = role;
     }
 }
-

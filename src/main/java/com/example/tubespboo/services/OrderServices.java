@@ -44,7 +44,6 @@ public class OrderServices {
 
         Customer customer = (Customer) principal;
 
-        // Replace input materials with fully loaded ones from the DB
         List<Material> resolvedMaterials = materials.stream().map(m -> {
             Material found = materialRepository.findByName(m.getName());
             if (found == null) {

@@ -35,6 +35,7 @@ public class AuthServiceImpl implements AuthServices {
         if (customer != null && passwordEncoder.matches(rawPassword, customer.getPassword())) {
             loggedInCustomer = customer;
             loggedInAdmin = null;
+            loggedInTukang = null;
             System.out.println("Login successful! Welcome, Customer " + customer.getName());
             return;
         }
@@ -43,6 +44,7 @@ public class AuthServiceImpl implements AuthServices {
         if (admin != null && passwordEncoder.matches(rawPassword, admin.getPassword())) {
             loggedInAdmin = admin;
             loggedInCustomer = null;
+            loggedInTukang = null;
             System.out.println("Login successful! Welcome, Admin " + admin.getName());
             return;
         }
@@ -50,6 +52,7 @@ public class AuthServiceImpl implements AuthServices {
         if (tukang != null && passwordEncoder.matches(rawPassword, tukang.getPassword())) {
             loggedInTukang = tukang;
             loggedInCustomer = null;
+            loggedInAdmin = null;
             System.out.println("Login successful! Welcome, Tukang " + tukang.getName());
             return;
         }
