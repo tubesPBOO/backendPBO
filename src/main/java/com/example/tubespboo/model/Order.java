@@ -18,6 +18,7 @@ public class Order {
     private List<Material> materials = new ArrayList<>();
     private List<Tukang> tukangs = new ArrayList<>();
     private Customer customer;
+    private int tukangCount;
 
     public Order() {}
 
@@ -87,5 +88,8 @@ public class Order {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+    public int getTukangCount(){
+        return tukangCount;
     }
 }

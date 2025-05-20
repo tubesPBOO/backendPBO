@@ -8,11 +8,15 @@ import com.example.tubespboo.exception.BadRequestException;
 import com.example.tubespboo.exception.DuplicateResource;
 import com.example.tubespboo.model.Admin;
 import com.example.tubespboo.model.Material;
+import com.example.tubespboo.model.Tukang;
 import com.example.tubespboo.repos.AdminRepository;
 import com.example.tubespboo.repos.MaterialRepository;
+import com.example.tubespboo.repos.OrderRepository;
+import com.example.tubespboo.repos.TukangRepository;
 
 @Service
-public class AdminServices extends UserServices{
+public class AdminServices extends UserServices {
+
     @Autowired
     private MaterialRepository materialRepository;
     @Autowired
@@ -21,6 +25,11 @@ public class AdminServices extends UserServices{
     private AdminRepository adminRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private TukangRepository tukangRepository;
+
     public Admin createAdmin(Admin admin) {
         if (admin.getEmail() == null || admin.getEmail().isEmpty()) {
             throw new BadRequestException("Email is required.");
@@ -42,6 +51,7 @@ public class AdminServices extends UserServices{
 
         return adminRepository.save(admin);
     }
+
     private void validatePassword(String password) {
         if (password.length() < 8) {
             throw new BadRequestException("Password must be at least 8 characters long.");
@@ -53,6 +63,7 @@ public class AdminServices extends UserServices{
             throw new BadRequestException("Password must contain at least one digit.");
         }
     }
+
     public Material addMaterial(Material material) {
         if (material.getName() == null || material.getName().isEmpty()) {
             throw new BadRequestException("Material name is required.");
@@ -69,24 +80,33 @@ public class AdminServices extends UserServices{
 
         return materialRepository.save(material);
     }
-    public void updateMaterialStock(String name,Material m){
+
+    public void updateMaterialStock(String name, Material m) {
         materialService.updateStock(name, m.getStock());
     }
-    public void updatePrice(String id,double price){
+
+    public void updatePrice(String id, double price) {
         materialService.updatePrice(id, price);
     }
     //public void registerWorker(Tukang){
 
     //}
-    public void assignTukangToOrder(int orderId,int tukangId){
+    public void assignTukangToOrder(int orderId, int tukangId) {
 
     }
-    public void UpdateTukangAvailability(int tukangId,boolean available){
 
+    public void updateTukangAvailability(String name, boolean available) {
+        Tukang tukang = tukangRepository.findByName(name);
+        if (tukang == null) {
+            throw new RuntimeException("Tukang not found: " + name);
+        }
+        tukang.setAvailability(available);
+        tukangRepository.save(tukang);
     }
+
     @Override
-    public void viewDashboard(){
-        
+    public void viewDashboard() {
+
     }
 
     @Override
