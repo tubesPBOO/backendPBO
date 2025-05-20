@@ -16,30 +16,30 @@ import com.example.tubespboo.services.AuthServiceImpl;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
     @Autowired
     private AppDetailsService userDetailsService;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthServiceImpl authService) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/api/customers/register", 
-                    "/api/tukang/register", 
-                    "/auth/**"
-                ).permitAll()
-                .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
-                .requestMatchers("/api/customers/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
-                .requestMatchers("/api/tukang/**").hasAuthority("ROLE_TUKANG")
-                .requestMatchers("/api/tukang/getAll").hasAnyAuthority("ROLE_TUKANG", "ROLE_CUSTOMER")
-                
-                .anyRequest().authenticated()
-            )
-            .httpBasic(Customizer.withDefaults())
-            .userDetailsService(userDetailsService)
-            .addFilterBefore(customAuthenticationFilter(authService), UsernamePasswordAuthenticationFilter.class);
-            
-            
+                // Enable CORS globally for the API
+                .cors(Customizer.withDefaults())
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/api/customers/register",
+                                "/api/tukang/register",
+                                "/auth/**")
+                        .permitAll()
+                        .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/customers/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
+                        .requestMatchers("/api/tukang/**").hasAuthority("ROLE_TUKANG")
+                        .requestMatchers("/api/tukang/getAll").hasAnyAuthority("ROLE_TUKANG", "ROLE_CUSTOMER")
+                        .anyRequest().authenticated())
+                .httpBasic(Customizer.withDefaults())
+                .userDetailsService(userDetailsService)
+                .addFilterBefore(customAuthenticationFilter(authService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -49,9 +49,20 @@ public class SecurityConfig {
         return new CustomAuthenticationFilter(authService);
     }
 
-    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public org.springframework.web.filter.CorsFilter corsFilter() {
+        org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:5173"); // Allow your frontend's URL
+        configuration.addAllowedMethod("*"); // Allow all HTTP methods
+        configuration.addAllowedHeader("*"); // Allow all headers
+        configuration.setAllowCredentials(true); // Allow cookies and credentials
+        org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return new org.springframework.web.filter.CorsFilter(source);
     }
 }
