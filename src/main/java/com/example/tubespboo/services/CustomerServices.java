@@ -12,6 +12,7 @@ import com.example.tubespboo.exception.BadRequestException;
 import com.example.tubespboo.exception.DuplicateResource;
 import com.example.tubespboo.exception.ResourceNotFound;
 import com.example.tubespboo.model.Customer;
+import com.example.tubespboo.model.UpdateProfileRequest;
 import com.example.tubespboo.repos.CustomerRepository;
 
 @Service
@@ -22,6 +23,7 @@ public class CustomerServices extends UserServices {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     public Customer getLoggedInCustomer() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof Customer) {
@@ -29,6 +31,7 @@ public class CustomerServices extends UserServices {
         }
         return null;
     }
+
     @Override
     public void viewDashboard() {
         Customer loggedInCustomer = getLoggedInCustomer();
@@ -40,8 +43,29 @@ public class CustomerServices extends UserServices {
     }
 
     @Override
-    public void updateProfile() {
-        
+    public void updateProfile(UpdateProfileRequest updateProfile) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Customer customer = customerRepository.findByName(authentication.getName());
+        if (customer == null || customer.getName() == null || customer.getName().isEmpty()) {
+            throw new ResourceNotFound("Customer with name " + authentication.getName() + " not found");
+        }
+        if (updateProfile.getName() != null) {
+            customer.setName(updateProfile.getName());
+        }
+        if (updateProfile.getEmail() != null) {
+            customer.setEmail(updateProfile.getEmail());
+        }
+        if (updateProfile.getPhoneNumber() != null) {
+            customer.setPhoneNumber(updateProfile.getPhoneNumber());
+        }
+        if (updateProfile.getPassword() != null) {
+            customer.setPassword(passwordEncoder.encode(updateProfile.getPassword()));
+        }
+        if (updateProfile.getAddress() != null) {
+            customer.setAddress(updateProfile.getAddress());
+        }
+
+        customerRepository.save(customer);
     }
 
     public Customer saveCustomer(Customer customer) {
@@ -76,23 +100,23 @@ public class CustomerServices extends UserServices {
             throw new BadRequestException("Password must contain at least one digit.");
         }
     }
+
     public Customer getCustomerName(String name) {
         Customer cus = customerRepository.findByName(name);
-        if (cus == null ){
+        if (cus == null) {
             throw new ResourceNotFound("Customer with Name " + name + " not found.");
-        }else{
+        } else {
             return cus;
         }
     }
-    public void deleteCustomerByName(String name){
+
+    public void deleteCustomerByName(String name) {
         Customer cus = customerRepository.findByName(name);
-        if (cus == null ){
+        if (cus == null) {
             throw new ResourceNotFound("Customer with Name " + name + " not found.");
-        }else{
+        } else {
             customerRepository.deleteByName(name);
         }
     }
 
 }
-
-

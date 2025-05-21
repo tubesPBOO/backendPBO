@@ -9,6 +9,7 @@ import com.example.tubespboo.exception.DuplicateResource;
 import com.example.tubespboo.model.Admin;
 import com.example.tubespboo.model.Material;
 import com.example.tubespboo.model.Tukang;
+import com.example.tubespboo.model.UpdateProfileRequest;
 import com.example.tubespboo.repos.AdminRepository;
 import com.example.tubespboo.repos.MaterialRepository;
 import com.example.tubespboo.repos.TukangRepository;
@@ -101,7 +102,7 @@ public class AdminServices extends UserServices {
     }
 
     @Override
-    public void updateProfile() {
+    public void updateProfile(UpdateProfileRequest updateProfile) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

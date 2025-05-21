@@ -3,16 +3,21 @@ package com.example.tubespboo.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.tubespboo.exception.BadRequestException;
 import com.example.tubespboo.exception.DuplicateResource;
+import com.example.tubespboo.exception.ResourceNotFound;
 import com.example.tubespboo.model.Tukang;
+import com.example.tubespboo.model.UpdateProfileRequest;
 import com.example.tubespboo.repos.TukangRepository;
 
 @Service
 public class TukangService extends UserServices {
+
     @Autowired
     private TukangRepository tukangRepository;
     @Autowired
@@ -39,9 +44,11 @@ public class TukangService extends UserServices {
 
         return tukangRepository.save(tukang);
     }
+
     public List<Tukang> getAllTukang() {
         return tukangRepository.findAll();
     }
+
     private void validatePassword(String password) {
         if (password.length() < 8) {
             throw new BadRequestException("Password must be at least 8 characters long.");
@@ -61,9 +68,25 @@ public class TukangService extends UserServices {
     }
 
     @Override
-    public void updateProfile() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateProfile'");
+    public void updateProfile(UpdateProfileRequest updateProfile) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Tukang tukang = tukangRepository.findByName(authentication.getName());
+        if (tukang == null || tukang.getName() == null || tukang.getName().isEmpty()) {
+            throw new ResourceNotFound("Tukang with name " + authentication.getName() + " not found");
+        }
+        if (updateProfile.getName() != null) {
+            tukang.setName(updateProfile.getName());
+        }
+        if (updateProfile.getEmail() != null) {
+            tukang.setEmail(updateProfile.getEmail());
+        }
+        if (updateProfile.getPhoneNumber() != null) {
+            tukang.setPhoneNumber(updateProfile.getPhoneNumber());
+        }
+        if (updateProfile.getPassword() != null) {
+            tukang.setPassword(passwordEncoder.encode(updateProfile.getPassword()));
+        }
+        tukangRepository.save(tukang);
     }
- 
+
 }
