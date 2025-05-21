@@ -11,7 +11,6 @@ import com.example.tubespboo.model.Material;
 import com.example.tubespboo.model.Tukang;
 import com.example.tubespboo.repos.AdminRepository;
 import com.example.tubespboo.repos.MaterialRepository;
-import com.example.tubespboo.repos.OrderRepository;
 import com.example.tubespboo.repos.TukangRepository;
 
 @Service
@@ -25,8 +24,6 @@ public class AdminServices extends UserServices {
     private AdminRepository adminRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
-    private OrderRepository orderRepository;
     @Autowired
     private TukangRepository tukangRepository;
 
@@ -87,12 +84,6 @@ public class AdminServices extends UserServices {
 
     public void updatePrice(String id, double price) {
         materialService.updatePrice(id, price);
-    }
-    //public void registerWorker(Tukang){
-
-    //}
-    public void assignTukangToOrder(int orderId, int tukangId) {
-
     }
 
     public void updateTukangAvailability(String name, boolean available) {
