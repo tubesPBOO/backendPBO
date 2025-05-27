@@ -8,7 +8,9 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.example.tubespboo.model.Admin;
 import com.example.tubespboo.model.Customer;
+import com.example.tubespboo.model.Tukang;
 import com.example.tubespboo.services.AuthServiceImpl;
 
 import jakarta.servlet.FilterChain;
@@ -38,8 +40,9 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
         }
 
         if (authService.isAdminLoggedIn()) {
+            Admin admin = authService.getLoggedInAdmin();
             Authentication auth = new UsernamePasswordAuthenticationToken(
-                "admin", null,
+                admin, null,
                 AuthorityUtils.createAuthorityList("ROLE_ADMIN")
             );
             SecurityContextHolder.getContext().setAuthentication(auth);
@@ -53,8 +56,9 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
         else if (authService.isTukangLoggedIn()) {
+            Tukang tukang = authService.getLoggedInTukang();
             Authentication auth = new UsernamePasswordAuthenticationToken(
-                "tukang", null,
+                tukang, null,
                 AuthorityUtils.createAuthorityList("ROLE_TUKANG")
             );
             SecurityContextHolder.getContext().setAuthentication(auth);

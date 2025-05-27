@@ -1,6 +1,7 @@
 package com.example.tubespboo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,8 +25,9 @@ public class AdminController {
     // @Autowired
     // private TukangService tukangService;
     @DeleteMapping("/delete-customer/{name}")
-    public void deleteCustomer(@PathVariable String name){
+    public ResponseEntity<String> deleteCustomer(@PathVariable String name){
         customerService.deleteCustomerByName(name);
+        return ResponseEntity.ok("Customer with name "+name+" deleted Sucessfully");
     }
 
     @PostMapping("/materials")
@@ -34,11 +36,13 @@ public class AdminController {
     }
 
     @PutMapping("/stock/{name}")
-    public void updateMaterialStock(@PathVariable String name, @RequestBody Material updatedMaterial) {
+    public ResponseEntity<String> updateMaterialStock(@PathVariable String name, @RequestBody Material updatedMaterial) {
         adminServices.updateMaterialStock(name,updatedMaterial);
+        return ResponseEntity.ok("Updated Sucessfully");
     }
     @PutMapping("/price/{name}")
-    public void updateMaterialPrice(@PathVariable String name, @RequestBody Material updatedMaterial) {
+    public ResponseEntity<String> updateMaterialPrice(@PathVariable String name, @RequestBody Material updatedMaterial) {
         adminServices.updatePrice(name, updatedMaterial.getPrice());
+        return ResponseEntity.ok("Updated Sucessfully");
     }
 }

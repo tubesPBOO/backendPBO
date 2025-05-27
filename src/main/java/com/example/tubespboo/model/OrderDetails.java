@@ -21,8 +21,15 @@ public class OrderDetails {
     private String status;
     private String deliveryStatus;
 
+    private Customer customer;
     public OrderDetails() {}
 
+    public Customer getCustomer(){
+        return customer;
+    }
+    public void setCustomer(Customer customer){
+        this.customer = customer;
+    }
     public void setOrder(Order order){
         this.order = order;
     }

@@ -94,5 +94,12 @@ public class AuthServiceImpl implements AuthServices {
         return loggedInCustomer;
 
     }
+    public Tukang getLoggedInTukang() {
+        return loggedInTukang;
 
+    }
+    public Admin getLoggedInAdmin() {
+        return loggedInAdmin;
+
+    }
 }

@@ -75,6 +75,9 @@ public class CustomerServices extends UserServices {
         if (customer.getEmail() == null || customer.getEmail().isEmpty()) {
             throw new BadRequestException("Email is required.");
         }
+        if (customerRepository.existsByName(customer.getName())){
+            throw new DuplicateResource("Name "+ customer.getName() + " already registered.");
+        }
         validatePassword(customer.getPassword());
 
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
@@ -88,7 +91,7 @@ public class CustomerServices extends UserServices {
     public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
     }
-
+    
     private void validatePassword(String password) {
         if (password.length() < 8) {
             throw new BadRequestException("Password must be at least 8 characters long.");

@@ -2,6 +2,8 @@ package com.example.tubespboo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,20 +32,27 @@ public class CustomerController {
     }
 
     @PostMapping("/updateProfile")
-    public void updateProfile(@RequestBody UpdateProfileRequest updateProfile){
+    public ResponseEntity<String> updateProfile(@RequestBody UpdateProfileRequest updateProfile){
         customerService.updateProfile(updateProfile);
+        return ResponseEntity.ok("Profile Changed Sucessfully");
     }
     @GetMapping("/{name}")
     public Customer getCustomer(@PathVariable String name) {
         return customerService.getCustomerName(name);
     }
-    @PostMapping("/rating/{name}")
-    public void addRatings(@PathVariable String name, @RequestBody Material material) {
+    @PostMapping("/rating/materials/{name}")
+    public ResponseEntity<String> addRatings(@PathVariable String name, @RequestBody Material material) {
         materialService.addRating(name, material.getTotrating());
+        return ResponseEntity.ok("Add Rating added Sucessfully");
     }
 
     @GetMapping
     public List<Customer> getAllCustomers() {
         return customerService.getAllCustomers();
+    }
+    @DeleteMapping("/deleteAccount/{name}")
+    public ResponseEntity<String> deleteAccount(@PathVariable String name){
+        customerService.deleteCustomerByName(name);
+        return ResponseEntity.ok("Customer with name "+name+" deleted Sucessfully");
     }
 }

@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 import com.example.tubespboo.exception.BadRequestException;
 import com.example.tubespboo.exception.DuplicateResource;
 import com.example.tubespboo.exception.ResourceNotFound;
+import com.example.tubespboo.model.Order;
 import com.example.tubespboo.model.Tukang;
 import com.example.tubespboo.model.UpdateProfileRequest;
+import com.example.tubespboo.repos.OrderRepository;
 import com.example.tubespboo.repos.TukangRepository;
 
 @Service
@@ -22,6 +24,22 @@ public class TukangService extends UserServices {
     private TukangRepository tukangRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private OrderRepository orderRepository;
+
+    public List<Order> getOrders() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!(principal instanceof Tukang)) {
+            throw new RuntimeException("Current user is not a tukang");
+        }
+
+        Tukang tukang = (Tukang) principal;
+        String tukangId = tukang.getId();
+
+        List<Order> orders = orderRepository.findByTukangs_Id(tukangId);
+
+        return orders;
+    }
 
     public Tukang saveTukang(Tukang tukang) {
         if (tukang.getEmail() == null || tukang.getEmail().isEmpty()) {
@@ -33,7 +51,9 @@ public class TukangService extends UserServices {
         if (tukang.getPassword() == null || tukang.getPassword().isEmpty()) {
             throw new BadRequestException("Password is required.");
         }
-
+        if (tukangRepository.existsByName(tukang.getName())) {
+            throw new DuplicateResource("Name " + tukang.getName() + " already registered.");
+        }
         validatePassword(tukang.getPassword());
 
         tukang.setPassword(passwordEncoder.encode(tukang.getPassword()));
@@ -89,4 +109,13 @@ public class TukangService extends UserServices {
         tukangRepository.save(tukang);
     }
 
+    public void deleteAccount() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!(principal instanceof Tukang)) {
+            throw new RuntimeException("Current user is not a tukang");
+        }
+        Tukang tukang = (Tukang) principal;
+        tukangRepository.delete(tukang);
+
+    }
 }

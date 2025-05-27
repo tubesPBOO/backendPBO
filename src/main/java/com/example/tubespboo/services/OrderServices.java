@@ -98,8 +98,27 @@ public class OrderServices {
         details.setDeliverId(Util.generateRandomId());
         details.setPayMethod("Not yet paid");
 
+        details.setCustomer(customer);
         orderDetailsRepository.save(details);
 
         return order;
+    }
+
+    public List<Order> getMyOrders() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!(principal instanceof Customer)) {
+            throw new RuntimeException("Current user is not a customer");
+        }
+        Customer customer = (Customer) principal;
+
+        return customer.getOrders();
+    }
+    public List<OrderDetails> getAllOrdersDetail() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!(principal instanceof Customer)) {
+            throw new RuntimeException("Current user is not a customer");
+        }
+        Customer customer = (Customer) principal;
+        return orderDetailsRepository.findByCustomer(customer);
     }
 }

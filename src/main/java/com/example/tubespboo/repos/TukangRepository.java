@@ -7,6 +7,6 @@ import com.example.tubespboo.model.Tukang;
 public interface  TukangRepository extends MongoRepository<Tukang, String>{
     Tukang findByName(String name);
     boolean existsByEmail(String email);
-
+    boolean existsByName(String name);
     Tukang findByEmail(String username);
 }
