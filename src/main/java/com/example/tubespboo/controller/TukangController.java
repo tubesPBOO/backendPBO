@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.tubespboo.model.Order;
+import com.example.tubespboo.model.OrderRequest;
 import com.example.tubespboo.model.Tukang;
+import com.example.tubespboo.services.OrderServices;
 import com.example.tubespboo.services.TukangService;
 
 @RestController
@@ -21,7 +23,8 @@ public class TukangController {
 
     @Autowired
     private TukangService tukangService;
- 
+    @Autowired
+    private OrderServices orderServices;
     @PostMapping("/register")
     public Tukang createTukang(@RequestBody Tukang tukang) {
         System.out.println("Received tukang registration request");
@@ -40,5 +43,16 @@ public class TukangController {
     @GetMapping("/getOrders")
     public List<Order> getOrders(){
         return tukangService.getOrders();
+    }
+
+    @GetMapping("/getAllOrders")
+    public List<Order> getAllOrders(){
+        return orderServices.getAllOrders();
+    }
+
+    @PostMapping("/assignSelf")
+    public ResponseEntity<String> AssignSelf(@RequestBody OrderRequest order){
+        tukangService.AssignSelf(order.getName());
+        return ResponseEntity.ok("Assigned to "+order.getName());
     }
 }

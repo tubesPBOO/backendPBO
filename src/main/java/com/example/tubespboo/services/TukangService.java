@@ -108,7 +108,7 @@ public class TukangService extends UserServices {
         }
         tukangRepository.save(tukang);
     }
-    
+
     public void deleteAccount() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!(principal instanceof Tukang)) {
@@ -117,5 +117,33 @@ public class TukangService extends UserServices {
         Tukang tukang = (Tukang) principal;
         tukangRepository.delete(tukang);
 
+    }
+
+    public void AssignSelf(String name) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!(principal instanceof Tukang)) {
+            throw new RuntimeException("Current user is not a tukang");
+        }
+
+        Tukang tukang = (Tukang) principal;
+        Order order = orderRepository.findByName(name);
+        if (order == null) {
+            throw new ResourceNotFound("Order with name" + name + " not found");
+        }
+
+        List<Tukang> currentTukangs = order.getTukangs();
+        if (currentTukangs.stream().anyMatch(t -> t.getId().equals(tukang.getId()))) {
+            throw new RuntimeException("You are already assigned to this order");
+        }
+        int tukangCount = order.getTukangCount();
+
+        if (currentTukangs.size() >= tukangCount) {
+            throw new RuntimeException("doesn't need another tukang in this order");
+        }
+
+        order.addTukang(tukang);
+        tukang.setAvailability(false); 
+        tukangRepository.save(tukang);
+        orderRepository.save(order);
     }
 }
