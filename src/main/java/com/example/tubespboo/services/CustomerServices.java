@@ -121,5 +121,14 @@ public class CustomerServices extends UserServices {
             customerRepository.deleteByName(name);
         }
     }
+    
+    public void deleteAccount(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
+        if (!(principal instanceof Customer)){
+            throw new RuntimeException("Current user is not Customer");
+        }
+        Customer cus = (Customer) principal;
+        customerRepository.delete(cus);
+    }
 }

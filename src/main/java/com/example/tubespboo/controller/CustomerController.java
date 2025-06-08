@@ -45,9 +45,9 @@ public class CustomerController {
     }
 
     
-    @DeleteMapping("/deleteAccount/{name}")
-    public ResponseEntity<String> deleteAccount(@PathVariable String name){
-        customerService.deleteCustomerByName(name);
-        return ResponseEntity.ok("Customer with name "+name+" deleted Sucessfully");
+    @DeleteMapping("/deleteAccount")
+    public ResponseEntity<String> deleteAccount(){
+        customerService.deleteAccount();
+        return ResponseEntity.ok("Account deleted Sucessfully");
     }
 }
