@@ -1,8 +1,11 @@
 package com.example.tubespboo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -10,39 +13,56 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.tubespboo.model.Customer;
 import com.example.tubespboo.model.Material;
+import com.example.tubespboo.model.Tukang;
 import com.example.tubespboo.services.AdminServices;
 import com.example.tubespboo.services.CustomerServices;
+import com.example.tubespboo.services.TukangService;
 
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
     @Autowired
     private CustomerServices customerService;
-
+    @Autowired
+    private TukangService tukangService;
     @Autowired
     private AdminServices adminServices;
     // @Autowired
     // private TukangService tukangService;
-    @DeleteMapping("/delete-customer/{name}")
-    public ResponseEntity<String> deleteCustomer(@PathVariable String name){
-        customerService.deleteCustomerByName(name);
-        return ResponseEntity.ok("Customer with name "+name+" deleted Sucessfully");
-    }
-
-    @PostMapping("/materials")
+    @PostMapping("/addMaterials")
     public Material createMaterial(@RequestBody Material material) {
         return adminServices.addMaterial(material);
     }
 
-    @PutMapping("/stock/{name}")
+    @PutMapping("/updateStock/{name}")
     public ResponseEntity<String> updateMaterialStock(@PathVariable String name, @RequestBody Material updatedMaterial) {
         adminServices.updateMaterialStock(name,updatedMaterial);
         return ResponseEntity.ok("Updated Sucessfully");
     }
-    @PutMapping("/price/{name}")
+    @PutMapping("/updatePrice/{name}")
     public ResponseEntity<String> updateMaterialPrice(@PathVariable String name, @RequestBody Material updatedMaterial) {
         adminServices.updatePrice(name, updatedMaterial.getPrice());
         return ResponseEntity.ok("Updated Sucessfully");
+    }
+    
+    @GetMapping("/getCustomersList")
+    public List<Customer> getAllCustomers() {
+        return customerService.getAllCustomers();
+    }
+    @DeleteMapping("/deleteUser/{name}")
+    public ResponseEntity<String> deleteUser(@PathVariable String name){
+        adminServices.deleteUser(name);
+        return ResponseEntity.ok("User Deleted Sucessfully");
+    }
+    @DeleteMapping("/deleteTukang/{name}")
+    public ResponseEntity<String> deleteTukang(@PathVariable String name){
+        adminServices.deleteTukang(name);
+        return ResponseEntity.ok("Tukang Deleted Sucessfully");
+    }
+    @GetMapping("/getTukangList")
+    public List<Tukang> getAllTukang(){
+        return tukangService.getAllTukang();
     }
 }

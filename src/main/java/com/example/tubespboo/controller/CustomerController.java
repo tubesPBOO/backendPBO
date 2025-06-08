@@ -1,6 +1,4 @@
 package com.example.tubespboo.controller;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,10 +44,7 @@ public class CustomerController {
         return ResponseEntity.ok("Add Rating added Sucessfully");
     }
 
-    @GetMapping
-    public List<Customer> getAllCustomers() {
-        return customerService.getAllCustomers();
-    }
+    
     @DeleteMapping("/deleteAccount/{name}")
     public ResponseEntity<String> deleteAccount(@PathVariable String name){
         customerService.deleteCustomerByName(name);

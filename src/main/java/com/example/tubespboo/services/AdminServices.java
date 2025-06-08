@@ -6,11 +6,14 @@ import org.springframework.stereotype.Service;
 
 import com.example.tubespboo.exception.BadRequestException;
 import com.example.tubespboo.exception.DuplicateResource;
+import com.example.tubespboo.exception.ResourceNotFound;
 import com.example.tubespboo.model.Admin;
+import com.example.tubespboo.model.Customer;
 import com.example.tubespboo.model.Material;
 import com.example.tubespboo.model.Tukang;
 import com.example.tubespboo.model.UpdateProfileRequest;
 import com.example.tubespboo.repos.AdminRepository;
+import com.example.tubespboo.repos.CustomerRepository;
 import com.example.tubespboo.repos.MaterialRepository;
 import com.example.tubespboo.repos.TukangRepository;
 
@@ -21,6 +24,8 @@ public class AdminServices extends UserServices {
     private MaterialRepository materialRepository;
     @Autowired
     private MaterialService materialService;
+    @Autowired
+    private CustomerRepository customerRepository;
     @Autowired
     private AdminRepository adminRepository;
     @Autowired
@@ -104,5 +109,24 @@ public class AdminServices extends UserServices {
     @Override
     public void updateProfile(UpdateProfileRequest updateProfile) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+    public void deleteUser(String name){
+        Customer cus = customerRepository.findByName(name);
+
+        if (cus == null){
+            throw new ResourceNotFound("customer with name: "+name+" not found");
+        }else{
+            customerRepository.delete(cus);
+        }
+    }
+
+    public void deleteTukang(String name){
+        Tukang tuk = tukangRepository.findByName(name);
+
+        if (tuk == null){
+            throw new ResourceNotFound("Tukang with name: "+name+" not found");
+        }else{
+            tukangRepository.delete(tuk);
+        }
     }
 }

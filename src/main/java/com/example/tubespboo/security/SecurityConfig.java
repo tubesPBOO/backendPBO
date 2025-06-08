@@ -29,7 +29,8 @@ public class SecurityConfig {
                 .requestMatchers(
                         "/api/customers/register",
                         "/api/tukang/register",
-                        "/auth/**")
+                        "/auth/**",
+                        "/api/materials/**")
                 .permitAll()
                 .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers("/api/customers/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
