@@ -11,10 +11,10 @@ import org.springframework.stereotype.Service;
 import com.example.tubespboo.exception.BadRequestException;
 import com.example.tubespboo.exception.DuplicateResource;
 import com.example.tubespboo.exception.ResourceNotFound;
-import com.example.tubespboo.model.Order;
+import com.example.tubespboo.model.Project;
 import com.example.tubespboo.model.Tukang;
 import com.example.tubespboo.model.UpdateProfileRequest;
-import com.example.tubespboo.repos.OrderRepository;
+import com.example.tubespboo.repos.ProjectRepository;
 import com.example.tubespboo.repos.TukangRepository;
 
 @Service
@@ -24,10 +24,10 @@ public class TukangService extends UserServices {
     private TukangRepository tukangRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
-    private OrderRepository orderRepository;
 
-    public List<Order> getOrders() {
+    @Autowired
+    private ProjectRepository projectRepository;
+    public List<Project> getProjects() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!(principal instanceof Tukang)) {
             throw new RuntimeException("Current user is not a tukang");
@@ -36,9 +36,9 @@ public class TukangService extends UserServices {
         Tukang tukang = (Tukang) principal;
         String tukangId = tukang.getId();
 
-        List<Order> orders = orderRepository.findByTukangs_Id(tukangId);
+        List<Project> project = projectRepository.findBylistTukang_Id(tukangId);
 
-        return orders;
+        return project;
     }
 
     public Tukang saveTukang(Tukang tukang) {
@@ -126,24 +126,24 @@ public class TukangService extends UserServices {
         }
 
         Tukang tukang = (Tukang) principal;
-        Order order = orderRepository.findByName(name);
-        if (order == null) {
+        Project project = projectRepository.findByName(name);
+        if (project == null) {
             throw new ResourceNotFound("Order with name" + name + " not found");
         }
 
-        List<Tukang> currentTukangs = order.getTukangs();
+        List<Tukang> currentTukangs = project.getListTukang();
         if (currentTukangs.stream().anyMatch(t -> t.getId().equals(tukang.getId()))) {
             throw new RuntimeException("You are already assigned to this order");
         }
-        int tukangCount = order.getTukangCount();
 
+        int tukangCount = project.getJumTukang();
         if (currentTukangs.size() >= tukangCount) {
             throw new RuntimeException("doesn't need another tukang in this order");
         }
 
-        order.addTukang(tukang);
+        project.addTukang(tukang);
         tukang.setAvailability(false); 
         tukangRepository.save(tukang);
-        orderRepository.save(order);
+        projectRepository.save(project);
     }
 }

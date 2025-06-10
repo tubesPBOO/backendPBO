@@ -55,10 +55,9 @@ public class OrderServices {
         }).collect(Collectors.toList());
         order.setMaterials(resolvedMaterials);
 
-        
-
         order.calculateTotal();
-
+        order.setId(Util.generateRandomId());
+        
         orderRepository.save(order);
 
         if (customer.getOrders() == null) {

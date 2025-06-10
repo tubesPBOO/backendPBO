@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 
 
-@Document(collection = "orders")
+@Document(collection = "ordersMaterial")
 public class Order {
     @Id
     private int id;
@@ -16,9 +16,7 @@ public class Order {
     private String name;
     private double price;
     private List<Material> materials = new ArrayList<>();
-    private List<Tukang> tukangs = new ArrayList<>();
-    private Customer customer;
-    private int tukangCount;
+
 
     public Order() {}
 
@@ -36,9 +34,7 @@ public class Order {
         calculateTotal();
     }
 
-    public void addTukang(Tukang tukang) {
-        this.tukangs.add(tukang);
-    }
+
 
     // Getters and Setters
 
@@ -74,22 +70,4 @@ public class Order {
         this.materials = materials;
     }
 
-    public List<Tukang> getTukangs() {
-        return tukangs;
-    }
-
-    public void setTukangs(List<Tukang> tukangs) {
-        this.tukangs = tukangs;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-    public int getTukangCount(){
-        return tukangCount;
-    }
 }

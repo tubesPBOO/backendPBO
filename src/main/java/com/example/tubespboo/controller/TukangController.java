@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.tubespboo.model.Order;
 import com.example.tubespboo.model.OrderRequest;
+import com.example.tubespboo.model.Project;
 import com.example.tubespboo.model.Tukang;
+import com.example.tubespboo.services.OrderProjectService;
 import com.example.tubespboo.services.OrderServices;
 import com.example.tubespboo.services.TukangService;
 
@@ -25,6 +26,8 @@ public class TukangController {
     private TukangService tukangService;
     @Autowired
     private OrderServices orderServices;
+    @Autowired
+    private OrderProjectService orderProjectService;
     @PostMapping("/register")
     public Tukang createTukang(@RequestBody Tukang tukang) {
         System.out.println("Received tukang registration request");
@@ -40,14 +43,14 @@ public class TukangController {
         tukangService.deleteAccount();
         return ResponseEntity.ok("Account has been deleted.");
     }
-    @GetMapping("/getOrders")
-    public List<Order> getOrders(){
-        return tukangService.getOrders();
+    @GetMapping("/getMyProject")
+    public List<Project> getProjects(){
+        return tukangService.getProjects();
     }
 
-    @GetMapping("/getAllOrders")
-    public List<Order> getAllOrders(){
-        return orderServices.getAllOrders();
+    @GetMapping("/getAllProjects")
+    public List<Project> getAllProjects(){
+        return orderProjectService.getAllProjects();
     }
 
     @PostMapping("/assignSelf")
