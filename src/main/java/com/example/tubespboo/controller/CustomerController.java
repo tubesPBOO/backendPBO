@@ -1,7 +1,9 @@
 package com.example.tubespboo.controller;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.tubespboo.exception.BadRequestException;
+import com.example.tubespboo.exception.DuplicateResource;
 import com.example.tubespboo.model.Customer;
 import com.example.tubespboo.model.Material;
 import com.example.tubespboo.model.Project;
@@ -30,20 +34,30 @@ public class CustomerController {
     private MaterialService materialService;
     @Autowired
     private OrderProjectService orderProjectService;
+
     @PostMapping("/register")
-    public Customer createCustomer(@RequestBody Customer customer) {
-        return customerService.saveCustomer(customer);
+    public ResponseEntity<String> createCustomer(@RequestBody Customer customer) {
+        try {
+            customerService.saveCustomer(customer);
+            return ResponseEntity.ok("you've been registered as Customer");
+        } catch (BadRequestException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (DuplicateResource e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
     }
 
     @PutMapping("/updateProfile")
-    public ResponseEntity<String> updateProfile(@RequestBody UpdateProfileRequest updateProfile){
+    public ResponseEntity<String> updateProfile(@RequestBody UpdateProfileRequest updateProfile) {
         customerService.updateProfile(updateProfile);
         return ResponseEntity.ok("Profile Changed Sucessfully");
     }
+
     @GetMapping("/{name}")
     public Customer getCustomer(@PathVariable String name) {
         return customerService.getCustomerName(name);
     }
+
     @PostMapping("/rating/materials/{name}")
     public ResponseEntity<String> addRatings(@PathVariable String name, @RequestBody Material material) {
         materialService.addRating(name, material.getTotrating());
@@ -51,15 +65,17 @@ public class CustomerController {
     }
 
     @PostMapping("/addProject")
-    public Project addProject(@RequestBody Project project){
+    public Project addProject(@RequestBody Project project) {
         return orderProjectService.addProject(project);
     }
+
     @GetMapping("/getMyProject")
-    public List<Project> getMyProject(){
+    public List<Project> getMyProject() {
         return orderProjectService.getMyProject();
     }
+
     @DeleteMapping("/deleteAccount")
-    public ResponseEntity<String> deleteAccount(){
+    public ResponseEntity<String> deleteAccount() {
         customerService.deleteAccount();
         return ResponseEntity.ok("Account deleted Sucessfully");
     }

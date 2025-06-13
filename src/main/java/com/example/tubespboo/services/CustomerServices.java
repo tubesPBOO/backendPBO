@@ -68,7 +68,7 @@ public class CustomerServices extends UserServices {
         customerRepository.save(customer);
     }
 
-    public Customer saveCustomer(Customer customer) {
+    public void saveCustomer(Customer customer) {
         if (customerRepository.existsByEmail(customer.getEmail())) {
             throw new DuplicateResource("Email " + customer.getEmail() + " already registered.");
         }
@@ -85,7 +85,7 @@ public class CustomerServices extends UserServices {
         if (customer.getRole() == null || customer.getRole().isEmpty()) {
             customer.setRole("ROLE_CUSTOMER");
         }
-        return customerRepository.save(customer);
+        customerRepository.save(customer);
     }
 
     public List<Customer> getAllCustomers() {

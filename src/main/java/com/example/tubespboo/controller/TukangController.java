@@ -3,6 +3,7 @@ package com.example.tubespboo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,11 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.tubespboo.exception.BadRequestException;
+import com.example.tubespboo.exception.DuplicateResource;
 import com.example.tubespboo.model.OrderRequest;
 import com.example.tubespboo.model.Project;
 import com.example.tubespboo.model.Tukang;
 import com.example.tubespboo.services.OrderProjectService;
-import com.example.tubespboo.services.OrderServices;
 import com.example.tubespboo.services.TukangService;
 
 @RestController
@@ -24,14 +26,20 @@ public class TukangController {
 
     @Autowired
     private TukangService tukangService;
-    @Autowired
-    private OrderServices orderServices;
+
     @Autowired
     private OrderProjectService orderProjectService;
     @PostMapping("/register")
-    public Tukang createTukang(@RequestBody Tukang tukang) {
+    public ResponseEntity<String> createTukang(@RequestBody Tukang tukang) {
         System.out.println("Received tukang registration request");
-        return tukangService.saveTukang(tukang);
+        try{
+            tukangService.saveTukang(tukang);
+            return ResponseEntity.ok("you've been registered as Tukang");
+        }catch(BadRequestException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }catch(DuplicateResource e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
     }
 
     @GetMapping("/getAll")

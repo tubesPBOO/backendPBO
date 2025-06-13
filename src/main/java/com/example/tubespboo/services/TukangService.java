@@ -41,7 +41,7 @@ public class TukangService extends UserServices {
         return project;
     }
 
-    public Tukang saveTukang(Tukang tukang) {
+    public void saveTukang(Tukang tukang) {
         if (tukang.getEmail() == null || tukang.getEmail().isEmpty()) {
             throw new BadRequestException("Email is required.");
         }
@@ -62,7 +62,7 @@ public class TukangService extends UserServices {
             tukang.setRole("ROLE_TUKANG");
         }
 
-        return tukangRepository.save(tukang);
+        tukangRepository.save(tukang);
     }
 
     public List<Tukang> getAllTukang() {
