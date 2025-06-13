@@ -75,11 +75,12 @@ public class CustomerServices extends UserServices {
         if (customer.getEmail() == null || customer.getEmail().isEmpty()) {
             throw new BadRequestException("Email is required.");
         }
-        if (customerRepository.existsByName(customer.getName())){
-            throw new DuplicateResource("Name "+ customer.getName() + " already registered.");
+        if (customerRepository.existsByName(customer.getName())) {
+            throw new DuplicateResource("Name " + customer.getName() + " already registered.");
         }
         validatePassword(customer.getPassword());
-
+        validatePhoneNumber(customer.getPhoneNumber());
+        
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         validatePassword(customer.getPassword());
         if (customer.getRole() == null || customer.getRole().isEmpty()) {
@@ -91,7 +92,7 @@ public class CustomerServices extends UserServices {
     public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
     }
-    
+
     private void validatePassword(String password) {
         if (password.length() < 8) {
             throw new BadRequestException("Password must be at least 8 characters long.");
@@ -101,6 +102,15 @@ public class CustomerServices extends UserServices {
         }
         if (!password.matches(".*\\d.*")) {
             throw new BadRequestException("Password must contain at least one digit.");
+        }
+    }
+
+    private void validatePhoneNumber(String number) {
+        if (number.length() < 11) {
+            throw new BadRequestException("Phone Number must be at least 11 characters long.");
+        }
+        if (!number.matches("\\d+")) {
+            throw new BadRequestException("Phone Number must contain only numbers.");
         }
     }
 
@@ -121,11 +131,11 @@ public class CustomerServices extends UserServices {
             customerRepository.deleteByName(name);
         }
     }
-    
-    public void deleteAccount(){
+
+    public void deleteAccount() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if (!(principal instanceof Customer)){
+        if (!(principal instanceof Customer)) {
             throw new RuntimeException("Current user is not Customer");
         }
         Customer cus = (Customer) principal;

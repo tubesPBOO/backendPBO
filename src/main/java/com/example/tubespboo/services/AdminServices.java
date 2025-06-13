@@ -1,6 +1,8 @@
 package com.example.tubespboo.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -67,7 +69,7 @@ public class AdminServices extends UserServices {
         }
     }
 
-    public Material addMaterial(Material material) {
+    public void addMaterial(Material material) {
         if (material.getName() == null || material.getName().isEmpty()) {
             throw new BadRequestException("Material name is required.");
         }
@@ -80,16 +82,28 @@ public class AdminServices extends UserServices {
         if (material.getName() == null || material.getName().isEmpty()) {
             throw new BadRequestException("Name is required.");
         }
-
-        return materialRepository.save(material);
+        material.setTotrating(0);
+        material.setRatingCount(0);
+        materialRepository.save(material);
     }
 
-    public void updateMaterialStock(String name, Material m) {
-        materialService.updateStock(name, m.getStock());
+    public ResponseEntity<String> updateMaterialStock(String name, Material m) {
+        
+        try{
+            materialService.updateStock(name, m.getStock());
+            return ResponseEntity.ok("Price Updated");
+        }catch(RuntimeException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
-    public void updatePrice(String id, double price) {
-        materialService.updatePrice(id, price);
+    public ResponseEntity<String> updatePrice(String id, double price) {
+        try{
+            materialService.updatePrice(id, price);
+            return ResponseEntity.ok("Price Updated");
+        }catch(RuntimeException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     public void updateTukangAvailability(String name, boolean available) {

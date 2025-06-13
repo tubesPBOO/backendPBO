@@ -3,6 +3,7 @@ package com.example.tubespboo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.tubespboo.exception.BadRequestException;
+import com.example.tubespboo.exception.DuplicateResource;
 import com.example.tubespboo.model.Customer;
 import com.example.tubespboo.model.Material;
 import com.example.tubespboo.model.Tukang;
@@ -32,8 +35,15 @@ public class AdminController {
     // @Autowired
     // private TukangService tukangService;
     @PostMapping("/addMaterials")
-    public Material createMaterial(@RequestBody Material material) {
-        return adminServices.addMaterial(material);
+    public ResponseEntity<String> createMaterial(@RequestBody Material material) {
+        try {
+            adminServices.addMaterial(material);
+            return ResponseEntity.ok("Material Added");
+        } catch (BadRequestException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }catch(DuplicateResource e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
     }
 
     @PutMapping("/updateStock/{name}")
