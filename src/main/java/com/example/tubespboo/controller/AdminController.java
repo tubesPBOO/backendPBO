@@ -40,12 +40,13 @@ public class AdminController {
     public ResponseEntity<String> createMaterial(@RequestBody Material material) {
         try {
             adminServices.addMaterial(material);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Material Added");
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("{\"message\": \"Material Added\"}");
         } catch (BadRequestException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (DuplicateResource e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        } catch (Exception e) { 
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
         }
     }

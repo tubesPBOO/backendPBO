@@ -65,8 +65,13 @@ public class CustomerController {
     }
 
     @PostMapping("/addProject")
-    public Project addProject(@RequestBody Project project) {
-        return orderProjectService.addProject(project);
+    public ResponseEntity<String> addProject(@RequestBody Project project) {
+        try {
+            orderProjectService.addProject(project);
+            return ResponseEntity.ok("Project Added");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping("/getMyProject")

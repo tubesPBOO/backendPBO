@@ -97,6 +97,6 @@ public class Project {
     }
 
     public int getTotalPrice() {
-        return jumTukang * durasi * price;
+        return jumTukang * durasi * 150000 + 250000;
     }
 }

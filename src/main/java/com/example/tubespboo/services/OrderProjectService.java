@@ -25,7 +25,7 @@ public class OrderProjectService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    public Project addProject(Project project) {
+    public void addProject(Project project) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (!(principal instanceof Customer)) {
@@ -35,6 +35,7 @@ public class OrderProjectService {
         Customer cus = (Customer) principal;
 
         project.setId(Util.generateRandomId());
+        project.setPrice(project.getTotalPrice());
         project.setCustomer(cus);
         projectRepository.save(project);
 
@@ -49,8 +50,6 @@ public class OrderProjectService {
 
         cus.addProject(project);
         customerRepository.save(cus);
-
-        return project;
     }
 
     public List<Project> getAllProjects(){
