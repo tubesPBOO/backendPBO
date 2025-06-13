@@ -36,7 +36,7 @@ public class OrderProjectService {
 
         project.setId(Util.generateRandomId());
         project.setPrice(project.getTotalPrice());
-        project.setCustomer(cus);
+        project.setCustomer(cus.getId());
         projectRepository.save(project);
 
         OrderProjectDetails details = new OrderProjectDetails();

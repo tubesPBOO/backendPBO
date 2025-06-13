@@ -1,5 +1,6 @@
 package com.example.tubespboo.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -12,13 +13,13 @@ public class Project {
 
     private String name;
     private Integer jumTukang;
-    private List<Tukang> listTukang;
+    private List<Tukang> listTukang = new ArrayList<>();
     private String deskripsi;
     private String alamatKota;
     private Integer durasi;
     private Integer price;
     private String status;
-    private Customer customer;
+    private String customerId;
     public void setId(int id){
         this.id = id;
     }
@@ -34,11 +35,11 @@ public class Project {
     public void setName(String name) {
         this.name = name;
     }
-    public void setCustomer(Customer customer){
-        this.customer = customer;
+    public void setCustomer(String customerID){
+        this.customerId = customerID;
     }
-    public Customer getCustomer(){
-        return customer;
+    public String getCustomer(){
+        return customerId;
     }
     public int getJumTukang() {
         return jumTukang;

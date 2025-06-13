@@ -1,5 +1,6 @@
 package com.example.tubespboo.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -13,8 +14,8 @@ public class Customer extends User implements UserDetails {
 
     private String address;
     private String phoneNumber;
-    private List<Order> orders;
-    private List<Project> projects;
+    private List<Order> orders = new ArrayList<>();
+    private List<Project> projects = new ArrayList<>();
 
     public Customer() {
         super();
@@ -75,12 +76,15 @@ public class Customer extends User implements UserDetails {
     public List<Order> getOrders() {
         return orders;
     }
-    public List<Project> getProjects(){
-        return projects;
+
+    public List<Project> getProjects() {
+        return this.projects;
     }
-    public void addProject(Project project){
+
+    public void addProject(Project project) {
         this.projects.add(project);
     }
+
     public void setOrders(List<Order> orders) {
         this.orders = orders;
     }
