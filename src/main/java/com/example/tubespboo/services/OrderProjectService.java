@@ -63,7 +63,7 @@ public class OrderProjectService {
         }
         Customer cus = (Customer)principal;
 
-        List<Project> project = projectRepository.findBycustomer(cus);
+        List<Project> project = projectRepository.findBycustomerId(cus.getId());
 
         return project;
     }
