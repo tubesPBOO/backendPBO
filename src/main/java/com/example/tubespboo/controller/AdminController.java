@@ -26,53 +26,61 @@ import com.example.tubespboo.services.TukangService;
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
+
     @Autowired
     private CustomerServices customerService;
     @Autowired
     private TukangService tukangService;
     @Autowired
     private AdminServices adminServices;
+
     // @Autowired
     // private TukangService tukangService;
     @PostMapping("/addMaterials")
     public ResponseEntity<String> createMaterial(@RequestBody Material material) {
         try {
             adminServices.addMaterial(material);
-            return ResponseEntity.ok("Material Added");
+            return ResponseEntity.status(HttpStatus.CREATED).body("Material Added");
         } catch (BadRequestException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }catch(DuplicateResource e){
+        } catch (DuplicateResource e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (Exception e) { 
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
         }
     }
 
     @PutMapping("/updateStock/{name}")
     public ResponseEntity<String> updateMaterialStock(@PathVariable String name, @RequestBody Material updatedMaterial) {
-        adminServices.updateMaterialStock(name,updatedMaterial);
+        adminServices.updateMaterialStock(name, updatedMaterial);
         return ResponseEntity.ok("Updated Sucessfully");
     }
+
     @PutMapping("/updatePrice/{name}")
     public ResponseEntity<String> updateMaterialPrice(@PathVariable String name, @RequestBody Material updatedMaterial) {
         adminServices.updatePrice(name, updatedMaterial.getPrice());
         return ResponseEntity.ok("Updated Sucessfully");
     }
-    
+
     @GetMapping("/getCustomersList")
     public List<Customer> getAllCustomers() {
         return customerService.getAllCustomers();
     }
+
     @DeleteMapping("/deleteUser/{name}")
-    public ResponseEntity<String> deleteUser(@PathVariable String name){
+    public ResponseEntity<String> deleteUser(@PathVariable String name) {
         adminServices.deleteUser(name);
         return ResponseEntity.ok("User Deleted Sucessfully");
     }
+
     @DeleteMapping("/deleteTukang/{name}")
-    public ResponseEntity<String> deleteTukang(@PathVariable String name){
+    public ResponseEntity<String> deleteTukang(@PathVariable String name) {
         adminServices.deleteTukang(name);
         return ResponseEntity.ok("Tukang Deleted Sucessfully");
     }
+
     @GetMapping("/getTukangList")
-    public List<Tukang> getAllTukang(){
+    public List<Tukang> getAllTukang() {
         return tukangService.getAllTukang();
     }
 }
