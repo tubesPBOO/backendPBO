@@ -37,6 +37,7 @@ public class OrderProjectService {
         project.setId(Util.generateRandomId());
         project.setPrice(project.getTotalPrice());
         project.setCustomer(cus.getId());
+        project.setStatus("Looking for Tukang");
         projectRepository.save(project);
 
         OrderProjectDetails details = new OrderProjectDetails();
