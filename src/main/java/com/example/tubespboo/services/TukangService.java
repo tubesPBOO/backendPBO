@@ -119,7 +119,7 @@ public class TukangService extends UserServices {
 
     }
 
-    public void assignSelf(String name) {
+    public void AssignSelf(String name) {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     if (!(principal instanceof Tukang)) {
         throw new RuntimeException("Current user is not a tukang");
