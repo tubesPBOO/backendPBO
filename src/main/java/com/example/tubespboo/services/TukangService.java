@@ -119,31 +119,37 @@ public class TukangService extends UserServices {
 
     }
 
-    public void AssignSelf(String name) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!(principal instanceof Tukang)) {
-            throw new RuntimeException("Current user is not a tukang");
-        }
-
-        Tukang tukang = (Tukang) principal;
-        Project project = projectRepository.findByName(name);
-        if (project == null) {
-            throw new ResourceNotFound("Order with name" + name + " not found");
-        }
-
-        List<Tukang> currentTukangs = project.getListTukang();
-        if (currentTukangs.stream().anyMatch(t -> t.getId().equals(tukang.getId()))) {
-            throw new RuntimeException("You are already assigned to this order");
-        }
-
-        int tukangCount = project.getJumTukang();
-        if (currentTukangs.size() >= tukangCount) {
-            throw new RuntimeException("doesn't need another tukang in this order");
-        }
-
-        project.addTukang(tukang);
-        tukang.setAvailability(false); 
-        tukangRepository.save(tukang);
-        projectRepository.save(project);
+    public void assignSelf(String name) {
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    if (!(principal instanceof Tukang)) {
+        throw new RuntimeException("Current user is not a tukang");
     }
+
+    Tukang tukang = (Tukang) principal;
+    Project project = projectRepository.findByName(name);
+    if (project == null) {
+        throw new ResourceNotFound("Project with name " + name + " not found");
+    }
+
+    List<Tukang> currentTukangs = project.getListTukang();
+    if (currentTukangs.stream().anyMatch(t -> t.getId().equals(tukang.getId()))) {
+        throw new RuntimeException("You are already assigned to this project");
+    }
+
+    int tukangCount = project.getJumTukang();
+    if (currentTukangs.size() >= tukangCount) {
+        throw new RuntimeException("This project does not need another tukang");
+    }
+
+    project.addTukang(tukang);
+    tukang.setAvailability(false);
+    tukangRepository.save(tukang);
+
+    if (project.getListTukang().size() == tukangCount) {
+        project.setStatus("On Progress");
+    }
+
+    projectRepository.save(project);
+}
+
 }
