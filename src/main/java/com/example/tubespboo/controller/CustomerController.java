@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.tubespboo.exception.BadRequestException;
 import com.example.tubespboo.exception.DuplicateResource;
+import com.example.tubespboo.exception.ResourceNotFound;
 import com.example.tubespboo.model.Customer;
 import com.example.tubespboo.model.Material;
 import com.example.tubespboo.model.Project;
@@ -42,15 +43,20 @@ public class CustomerController {
             return ResponseEntity.ok("you've been registered as Customer");
         } catch (BadRequestException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (DuplicateResource e){
+        } catch (DuplicateResource e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
 
     @PutMapping("/updateProfile")
     public ResponseEntity<String> updateProfile(@RequestBody UpdateProfileRequest updateProfile) {
-        customerService.updateProfile(updateProfile);
-        return ResponseEntity.ok("Profile Changed Sucessfully");
+        try {
+            customerService.updateProfile(updateProfile);
+            return ResponseEntity.ok("Profile Changed Sucessfully");
+        } catch (ResourceNotFound e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+
+        }
     }
 
     @GetMapping("/{name}")
@@ -60,8 +66,12 @@ public class CustomerController {
 
     @PostMapping("/rating/materials/{name}")
     public ResponseEntity<String> addRatings(@PathVariable String name, @RequestBody Material material) {
-        materialService.addRating(name, material.getTotrating());
-        return ResponseEntity.ok("Add Rating added Sucessfully");
+        try {
+            materialService.addRating(name, material.getTotrating());
+            return ResponseEntity.ok("Add Rating added Sucessfully");
+        } catch (RuntimeException err) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err.getMessage());
+        }
     }
 
     @PostMapping("/addProject")
@@ -81,7 +91,12 @@ public class CustomerController {
 
     @DeleteMapping("/deleteAccount")
     public ResponseEntity<String> deleteAccount() {
-        customerService.deleteAccount();
-        return ResponseEntity.ok("Account deleted Sucessfully");
+        try {
+            customerService.deleteAccount();
+            return ResponseEntity.ok("Account deleted Sucessfully");
+        } catch (RuntimeException err) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err.getMessage());
+
+        }
     }
 }

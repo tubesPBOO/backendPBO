@@ -3,6 +3,8 @@ package com.example.tubespboo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,11 +23,17 @@ public class OrderController {
     private OrderServices orderServices;
 
     @PostMapping("/order")
-    public Order addOrder(@RequestBody Order order) {
-        return orderServices.addOrder(order);
+    public ResponseEntity<String> addOrder(@RequestBody Order order) {
+        try {
+            orderServices.addOrder(order);
+            return ResponseEntity.ok("Order Added");
+        }catch(RuntimeException err){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err.getMessage());
+        }
     }
+
     @GetMapping("/getOrdersDetail")
-    public List<OrderDetails> getDetails(){
+    public List<OrderDetails> getDetails() {
         return orderServices.getAllOrdersDetail();
     }
 }

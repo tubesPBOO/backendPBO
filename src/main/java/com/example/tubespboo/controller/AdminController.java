@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.tubespboo.exception.BadRequestException;
 import com.example.tubespboo.exception.DuplicateResource;
+import com.example.tubespboo.exception.ResourceNotFound;
 import com.example.tubespboo.model.Customer;
 import com.example.tubespboo.model.Material;
 import com.example.tubespboo.model.Tukang;
@@ -59,8 +60,7 @@ public class AdminController {
 
     @PutMapping("/updatePrice/{name}")
     public ResponseEntity<String> updateMaterialPrice(@PathVariable String name, @RequestBody Material updatedMaterial) {
-        adminServices.updatePrice(name, updatedMaterial.getPrice());
-        return ResponseEntity.ok("Updated Sucessfully");
+       return adminServices.updatePrice(name, updatedMaterial.getPrice());
     }
 
     @GetMapping("/getCustomersList")
@@ -70,14 +70,22 @@ public class AdminController {
 
     @DeleteMapping("/deleteUser/{name}")
     public ResponseEntity<String> deleteUser(@PathVariable String name) {
-        adminServices.deleteUser(name);
-        return ResponseEntity.ok("User Deleted Sucessfully");
+        try {
+            adminServices.deleteUser(name);
+            return ResponseEntity.ok("User Deleted Sucessfully");
+        }catch(ResourceNotFound err){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err.getMessage());
+        }
     }
 
     @DeleteMapping("/deleteTukang/{name}")
     public ResponseEntity<String> deleteTukang(@PathVariable String name) {
-        adminServices.deleteTukang(name);
-        return ResponseEntity.ok("Tukang Deleted Sucessfully");
+        try {
+            adminServices.deleteTukang(name);
+            return ResponseEntity.ok("Tukang Deleted Sucessfully");
+        } catch (ResourceNotFound err) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err.getMessage());
+        }
     }
 
     @GetMapping("/getTukangList")

@@ -36,7 +36,7 @@ public class OrderServices {
 
 
 
-    public Order addOrder(Order order) {
+    public void addOrder(Order order) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<Material> materials = order.getMaterials();
 
@@ -80,8 +80,6 @@ public class OrderServices {
 
         details.setCustomer(customer);
         orderDetailsRepository.save(details);
-
-        return order;
     }
 
     public List<Order> getMyOrders() {
