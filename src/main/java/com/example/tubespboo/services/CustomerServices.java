@@ -62,7 +62,11 @@ public class CustomerServices extends UserServices {
             throw new ResourceNotFound("Customer with name " + authentication.getName() + " not found");
         }
         if (updateProfile.getName() != null) {
+            if(customerRepository.existsByName(updateProfile.getName())){
+                throw new DuplicateResource(updateProfile.getName()+" is already exist");
+            }
             customer.setName(updateProfile.getName());
+
         }
         if (updateProfile.getEmail() != null) {
             customer.setEmail(updateProfile.getEmail());

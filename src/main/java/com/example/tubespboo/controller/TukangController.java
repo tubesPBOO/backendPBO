@@ -34,7 +34,7 @@ public class TukangController {
     private OrderProjectService orderProjectService;
 
     @GetMapping("/getCurrentUser")
-    public ResponseEntity<?> getCurrentUser(){
+    public ResponseEntity<?> getCurrentUser() {
         try {
             Tukang tukang = tukangService.getLoggedTukang();
             return ResponseEntity.ok(tukang);
@@ -42,6 +42,7 @@ public class TukangController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
     @PostMapping("/register")
     public ResponseEntity<String> createTukang(@RequestBody Tukang tukang) {
         System.out.println("Received tukang registration request");
@@ -85,7 +86,7 @@ public class TukangController {
         try {
             tukangService.updateProfile(profileRequest);
             return ResponseEntity.ok("Profile Updated");
-        } catch (ResourceNotFound err) {
+        } catch (DuplicateResource | ResourceNotFound err) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(err.getMessage());
         }
     }

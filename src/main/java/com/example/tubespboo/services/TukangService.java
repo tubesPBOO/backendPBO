@@ -96,6 +96,9 @@ public class TukangService extends UserServices {
             throw new ResourceNotFound("Tukang with name " + tukang.getName() + " not found");
         }
         if (updateProfile.getName() != null) {
+            if(tukangRepository.existsByName(updateProfile.getName())){
+                throw new DuplicateResource(updateProfile.getName()+" already exist");
+            }
             tukang.setName(updateProfile.getName());
         }
         if (updateProfile.getEmail() != null) {

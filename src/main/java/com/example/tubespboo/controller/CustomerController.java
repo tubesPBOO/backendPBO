@@ -71,9 +71,8 @@ public class CustomerController {
         try {
             customerService.updateProfile(updateProfile);
             return ResponseEntity.ok("Profile Changed Sucessfully");
-        } catch (ResourceNotFound e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-
+        } catch (DuplicateResource | ResourceNotFound err) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(err.getMessage());
         }
     }
 
