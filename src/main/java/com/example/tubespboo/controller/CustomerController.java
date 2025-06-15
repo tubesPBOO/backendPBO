@@ -36,6 +36,15 @@ public class CustomerController {
     @Autowired
     private OrderProjectService orderProjectService;
 
+    @GetMapping("/getCurrentUser")
+    public ResponseEntity<?> getCurrentUser(){
+        try {
+            Customer cus = customerService.getLoggedInCustomer();
+            return ResponseEntity.ok(cus);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
     @PostMapping("/register")
     public ResponseEntity<String> createCustomer(@RequestBody Customer customer) {
         try {

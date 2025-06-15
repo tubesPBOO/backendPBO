@@ -27,6 +27,7 @@ public class TukangService extends UserServices {
 
     @Autowired
     private ProjectRepository projectRepository;
+
     public List<Project> getProjects() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!(principal instanceof Tukang)) {
@@ -120,36 +121,45 @@ public class TukangService extends UserServices {
     }
 
     public void AssignSelf(String name) {
-    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    if (!(principal instanceof Tukang)) {
-        throw new RuntimeException("Current user is not a tukang");
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!(principal instanceof Tukang)) {
+            throw new RuntimeException("Current user is not a tukang");
+        }
+
+        Tukang tukang = (Tukang) principal;
+        Project project = projectRepository.findByName(name);
+        if (project == null) {
+            throw new ResourceNotFound("Project with name " + name + " not found");
+        }
+
+        List<Tukang> currentTukangs = project.getListTukang();
+        if (currentTukangs.stream().anyMatch(t -> t.getId().equals(tukang.getId()))) {
+            throw new RuntimeException("You are already assigned to this project");
+        }
+
+        int tukangCount = project.getJumTukang();
+        if (currentTukangs.size() >= tukangCount) {
+            throw new RuntimeException("This project does not need another tukang");
+        }
+
+        project.addTukang(tukang);
+        tukang.setAvailability(false);
+        tukangRepository.save(tukang);
+
+        if (project.getListTukang().size() == tukangCount) {
+            project.setStatus("On Progress");
+        }
+
+        projectRepository.save(project);
     }
 
-    Tukang tukang = (Tukang) principal;
-    Project project = projectRepository.findByName(name);
-    if (project == null) {
-        throw new ResourceNotFound("Project with name " + name + " not found");
+    public Tukang getLoggedTukang() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof Tukang)) {
+            throw new RuntimeException("Current User is not Tukang");
+        }
+        Tukang tukang = (Tukang) authentication.getPrincipal();
+        return tukang;
     }
-
-    List<Tukang> currentTukangs = project.getListTukang();
-    if (currentTukangs.stream().anyMatch(t -> t.getId().equals(tukang.getId()))) {
-        throw new RuntimeException("You are already assigned to this project");
-    }
-
-    int tukangCount = project.getJumTukang();
-    if (currentTukangs.size() >= tukangCount) {
-        throw new RuntimeException("This project does not need another tukang");
-    }
-
-    project.addTukang(tukang);
-    tukang.setAvailability(false);
-    tukangRepository.save(tukang);
-
-    if (project.getListTukang().size() == tukangCount) {
-        project.setStatus("On Progress");
-    }
-
-    projectRepository.save(project);
-}
 
 }

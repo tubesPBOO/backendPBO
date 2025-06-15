@@ -26,10 +26,11 @@ public class CustomerServices extends UserServices {
 
     public Customer getLoggedInCustomer() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof Customer) {
-            return (Customer) authentication.getPrincipal();
+        if (authentication == null || !(authentication.getPrincipal() instanceof Customer)) {
+            throw new RuntimeException("Current User is not Customer");
         }
-        return null;
+        Customer cus = (Customer) authentication.getPrincipal();
+        return cus;
     }
 
     @Override

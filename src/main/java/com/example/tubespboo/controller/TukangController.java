@@ -33,6 +33,15 @@ public class TukangController {
     @Autowired
     private OrderProjectService orderProjectService;
 
+    @GetMapping("/getCurrentUser")
+    public ResponseEntity<?> getCurrentUser(){
+        try {
+            Tukang tukang = tukangService.getLoggedTukang();
+            return ResponseEntity.ok(tukang);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
     @PostMapping("/register")
     public ResponseEntity<String> createTukang(@RequestBody Tukang tukang) {
         System.out.println("Received tukang registration request");
