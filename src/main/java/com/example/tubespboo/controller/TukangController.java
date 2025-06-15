@@ -81,7 +81,7 @@ public class TukangController {
     }
 
     @PutMapping("/UpdateProfile")
-    public ResponseEntity<String> updateProfile(UpdateProfileRequest profileRequest) {
+    public ResponseEntity<String> updateProfile(@RequestBody UpdateProfileRequest profileRequest) {
         try {
             tukangService.updateProfile(profileRequest);
             return ResponseEntity.ok("Profile Updated");

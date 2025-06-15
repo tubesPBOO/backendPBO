@@ -90,10 +90,10 @@ public class TukangService extends UserServices {
 
     @Override
     public void updateProfile(UpdateProfileRequest updateProfile) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Tukang tukang = tukangRepository.findByName(authentication.getName());
+        Tukang tukang = (Tukang) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         if (tukang == null || tukang.getName() == null || tukang.getName().isEmpty()) {
-            throw new ResourceNotFound("Tukang with name " + authentication.getName() + " not found");
+            throw new ResourceNotFound("Tukang with name " + tukang.getName() + " not found");
         }
         if (updateProfile.getName() != null) {
             tukang.setName(updateProfile.getName());
