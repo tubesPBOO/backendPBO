@@ -57,7 +57,7 @@ public class OrderServices {
 
         order.calculateTotal();
         order.setId(Util.generateRandomId());
-        
+        order.setName(Util.generateRandomString(7));
         orderRepository.save(order);
 
         if (customer.getOrders() == null) {
