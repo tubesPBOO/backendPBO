@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.example.tubespboo.exception.ResourceNotFound;
 import com.example.tubespboo.model.Customer;
 import com.example.tubespboo.model.Material;
 import com.example.tubespboo.model.Order;
@@ -51,14 +52,21 @@ public class OrderServices {
             if (found == null) {
                 throw new RuntimeException("Material not found: " + m.getName());
             }
-            return found;
+            if(found.getStock() > 0){
+                found.setStock(found.getStock() - 1);
+                return found;
+            }else{
+                throw new ResourceNotFound(found.getName()+" stock is empty");
+            }
         }).collect(Collectors.toList());
+        resolvedMaterials.forEach(materialRepository::save);
         order.setMaterials(resolvedMaterials);
 
         order.calculateTotal();
         order.setId(Util.generateRandomId());
         order.setName(Util.generateRandomString(7));
         orderRepository.save(order);
+
 
         if (customer.getOrders() == null) {
             customer.setOrders(new ArrayList<>());
