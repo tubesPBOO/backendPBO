@@ -36,6 +36,15 @@ public class CustomerController {
     @Autowired
     private OrderProjectService orderProjectService;
 
+    @PostMapping("/rateTukang")
+    public ResponseEntity<String> ratingTukang(@RequestBody String name, @RequestBody int rating){
+        try {
+            customerService.rateTukang(name, rating);
+            return ResponseEntity.ok("Tukang has been rated");
+        } catch (ResourceNotFound e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
     @GetMapping("/getCurrentUser")
     public ResponseEntity<?> getCurrentUser(){
         try {

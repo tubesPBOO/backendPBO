@@ -12,18 +12,29 @@ import com.example.tubespboo.exception.BadRequestException;
 import com.example.tubespboo.exception.DuplicateResource;
 import com.example.tubespboo.exception.ResourceNotFound;
 import com.example.tubespboo.model.Customer;
+import com.example.tubespboo.model.Tukang;
 import com.example.tubespboo.model.UpdateProfileRequest;
 import com.example.tubespboo.repos.CustomerRepository;
+import com.example.tubespboo.repos.TukangRepository;
 
 @Service
 public class CustomerServices extends UserServices {
 
     @Autowired
     private CustomerRepository customerRepository;
-
+    @Autowired
+    private TukangRepository tukangRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    public void rateTukang(String name, int rating){
+        Tukang tukang = tukangRepository.findByName(name);
+        if (tukang == null){
+            throw new ResourceNotFound("tukang with name "+name+" doesn't exist");
+        }
+        tukang.addRating(rating);
+        tukangRepository.save(tukang);
+    }
     public Customer getLoggedInCustomer() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !(authentication.getPrincipal() instanceof Customer)) {
