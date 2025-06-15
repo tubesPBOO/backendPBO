@@ -102,9 +102,15 @@ public class TukangService extends UserServices {
             tukang.setName(updateProfile.getName());
         }
         if (updateProfile.getEmail() != null) {
+            if(tukangRepository.existsByEmail(updateProfile.getEmail())){
+                throw new DuplicateResource(updateProfile.getEmail()+" already exist");
+            }
             tukang.setEmail(updateProfile.getEmail());
         }
         if (updateProfile.getPhoneNumber() != null) {
+            if(tukangRepository.existsByPhoneNumber(updateProfile.getPhoneNumber())){
+                throw new DuplicateResource(updateProfile.getEmail()+" already exist");
+            }
             tukang.setPhoneNumber(updateProfile.getPhoneNumber());
         }
         if (updateProfile.getPassword() != null) {

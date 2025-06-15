@@ -27,14 +27,15 @@ public class CustomerServices extends UserServices {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public void rateTukang(String name, int rating){
+    public void rateTukang(String name, int rating) {
         Tukang tukang = tukangRepository.findByName(name);
-        if (tukang == null){
-            throw new ResourceNotFound("tukang with name "+name+" doesn't exist");
+        if (tukang == null) {
+            throw new ResourceNotFound("tukang with name " + name + " doesn't exist");
         }
         tukang.addRating(rating);
         tukangRepository.save(tukang);
     }
+
     public Customer getLoggedInCustomer() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !(authentication.getPrincipal() instanceof Customer)) {
@@ -62,16 +63,21 @@ public class CustomerServices extends UserServices {
             throw new ResourceNotFound("Customer with name " + authentication.getName() + " not found");
         }
         if (updateProfile.getName() != null) {
-            if(customerRepository.existsByName(updateProfile.getName())){
-                throw new DuplicateResource(updateProfile.getName()+" is already exist");
+            if (customerRepository.existsByName(updateProfile.getName())) {
+                throw new DuplicateResource(updateProfile.getName() + " is already exist");
             }
             customer.setName(updateProfile.getName());
-
         }
         if (updateProfile.getEmail() != null) {
+            if (customerRepository.existsByEmail(updateProfile.getEmail())) {
+                throw new DuplicateResource(updateProfile.getEmail() + " is already exist");
+            }
             customer.setEmail(updateProfile.getEmail());
         }
         if (updateProfile.getPhoneNumber() != null) {
+            if (customerRepository.existsByPhoneNumber(updateProfile.getPhoneNumber())) {
+                throw new DuplicateResource(updateProfile.getPhoneNumber() + " is already exist");
+            }
             customer.setPhoneNumber(updateProfile.getPhoneNumber());
         }
         if (updateProfile.getPassword() != null) {
@@ -96,7 +102,7 @@ public class CustomerServices extends UserServices {
         }
         validatePassword(customer.getPassword());
         validatePhoneNumber(customer.getPhoneNumber());
-        
+
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         validatePassword(customer.getPassword());
         if (customer.getRole() == null || customer.getRole().isEmpty()) {
