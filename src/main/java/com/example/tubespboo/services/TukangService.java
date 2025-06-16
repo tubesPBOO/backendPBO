@@ -96,20 +96,27 @@ public class TukangService extends UserServices {
             throw new ResourceNotFound("Tukang with name " + tukang.getName() + " not found");
         }
         if (updateProfile.getName() != null) {
-            if(tukangRepository.existsByName(updateProfile.getName())){
-                throw new DuplicateResource(updateProfile.getName()+" already exist");
+            if (tukangRepository.existsByName(updateProfile.getName())) {
+                throw new DuplicateResource(updateProfile.getName() + " already exist");
             }
             tukang.setName(updateProfile.getName());
         }
         if (updateProfile.getEmail() != null) {
-            if(tukangRepository.existsByEmail(updateProfile.getEmail())){
-                throw new DuplicateResource(updateProfile.getEmail()+" already exist");
+            String emailUsername = updateProfile.getEmail().split("@")[0];
+
+            boolean exists = tukangRepository.findAll().stream()
+                    .anyMatch(c -> c.getEmail() != null && c.getEmail().split("@")[0].equals(emailUsername));
+
+            if (exists) {
+                throw new DuplicateResource(emailUsername + " is already in use");
             }
+
             tukang.setEmail(updateProfile.getEmail());
         }
+
         if (updateProfile.getPhoneNumber() != null) {
-            if(tukangRepository.existsByPhoneNumber(updateProfile.getPhoneNumber())){
-                throw new DuplicateResource(updateProfile.getEmail()+" already exist");
+            if (tukangRepository.existsByPhoneNumber(updateProfile.getPhoneNumber())) {
+                throw new DuplicateResource(updateProfile.getEmail() + " already exist");
             }
             tukang.setPhoneNumber(updateProfile.getPhoneNumber());
         }

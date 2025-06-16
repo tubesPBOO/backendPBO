@@ -69,11 +69,18 @@ public class CustomerServices extends UserServices {
             customer.setName(updateProfile.getName());
         }
         if (updateProfile.getEmail() != null) {
-            if (customerRepository.existsByEmail(updateProfile.getEmail())) {
-                throw new DuplicateResource(updateProfile.getEmail() + " is already exist");
+            String emailUsername = updateProfile.getEmail().split("@")[0];
+
+            boolean exists = customerRepository.findAll().stream()
+                    .anyMatch(c -> c.getEmail() != null && c.getEmail().split("@")[0].equals(emailUsername));
+
+            if (exists) {
+                throw new DuplicateResource(emailUsername + " is already in use");
             }
+
             customer.setEmail(updateProfile.getEmail());
         }
+
         if (updateProfile.getPhoneNumber() != null) {
             if (customerRepository.existsByPhoneNumber(updateProfile.getPhoneNumber())) {
                 throw new DuplicateResource(updateProfile.getPhoneNumber() + " is already exist");
