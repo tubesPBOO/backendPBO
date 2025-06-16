@@ -62,13 +62,13 @@ public class CustomerServices extends UserServices {
         if (customer == null || customer.getName() == null || customer.getName().isEmpty()) {
             throw new ResourceNotFound("Customer with name " + authentication.getName() + " not found");
         }
-        if (updateProfile.getName() != null) {
+        if (updateProfile.getName() != null && !updateProfile.getName().equals(customer.getName())) {
             if (customerRepository.existsByName(updateProfile.getName())) {
                 throw new DuplicateResource(updateProfile.getName() + " is already exist");
             }
             customer.setName(updateProfile.getName());
         }
-        if (updateProfile.getEmail() != null) {
+        if (updateProfile.getEmail() != null && !updateProfile.getEmail().equals(customer.getEmail())) {
             String emailUsername = updateProfile.getEmail().split("@")[0];
 
             boolean exists = customerRepository.findAll().stream()
@@ -81,7 +81,7 @@ public class CustomerServices extends UserServices {
             customer.setEmail(updateProfile.getEmail());
         }
 
-        if (updateProfile.getPhoneNumber() != null) {
+        if (updateProfile.getPhoneNumber() != null && !updateProfile.getPhoneNumber().equals(customer.getPhoneNumber())) {
             if (customerRepository.existsByPhoneNumber(updateProfile.getPhoneNumber())) {
                 throw new DuplicateResource(updateProfile.getPhoneNumber() + " is already exist");
             }
