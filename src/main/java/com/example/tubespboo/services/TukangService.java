@@ -56,7 +56,8 @@ public class TukangService extends UserServices {
             throw new DuplicateResource("Name " + tukang.getName() + " already registered.");
         }
         validatePassword(tukang.getPassword());
-
+        validatePhoneNumber(tukang.getPhoneNumber());
+        
         tukang.setPassword(passwordEncoder.encode(tukang.getPassword()));
 
         if (tukang.getRole() == null || tukang.getRole().isEmpty()) {
@@ -79,6 +80,15 @@ public class TukangService extends UserServices {
         }
         if (!password.matches(".*\\d.*")) {
             throw new BadRequestException("Password must contain at least one digit.");
+        }
+    }
+
+    private void validatePhoneNumber(String number) {
+        if (number.length() < 11) {
+            throw new BadRequestException("Phone Number must be at least 11 characters long.");
+        }
+        if (!number.matches("\\d+")) {
+            throw new BadRequestException("Phone Number must contain only numbers.");
         }
     }
 
