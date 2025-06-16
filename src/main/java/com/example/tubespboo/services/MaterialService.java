@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.tubespboo.exception.ResourceNotFound;
 import com.example.tubespboo.model.Material;
 import com.example.tubespboo.repos.MaterialRepository;
 
@@ -53,6 +54,13 @@ public class MaterialService {
         if (material.getRatingCount() == 0) return 0;
 
         return material.getTotrating() / material.getRatingCount();
+    }
+    public void deleteMaterial(String name){
+       Material material = materialRepository.findByName(name);
+        if (material == null) {
+            throw new ResourceNotFound("Material with name '" + name + "' not found");
+        }
+        materialRepository.delete(material);
     }
 }
 
