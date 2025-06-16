@@ -3,6 +3,7 @@ package com.example.tubespboo.services;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,6 @@ public class OrderServices {
     @Autowired
     private MaterialRepository materialRepository;
 
-
-
     public void addOrder(Order order) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<Material> materials = order.getMaterials();
@@ -47,26 +46,33 @@ public class OrderServices {
 
         Customer customer = (Customer) principal;
 
-        List<Material> resolvedMaterials = materials.stream().map(m -> {
-            Material found = materialRepository.findByName(m.getName());
+        Map<String, Long> materialCounts = materials.stream()
+                .collect(Collectors.groupingBy(Material::getName, Collectors.counting()));
+
+        List<Material> resolvedMaterials = materialCounts.entrySet().stream().map(entry -> {
+            String materialName = entry.getKey();
+            int quantityRequested = entry.getValue().intValue();
+
+            Material found = materialRepository.findByName(materialName);
             if (found == null) {
-                throw new RuntimeException("Material not found: " + m.getName());
+                throw new RuntimeException("Material not found: " + materialName);
             }
-            if(found.getStock() > 0){
-                found.setStock(found.getStock() - 1);
+
+            if (found.getStock() >= quantityRequested) {
+                found.setStock(found.getStock() - quantityRequested);
                 return found;
-            }else{
-                throw new ResourceNotFound(found.getName()+" stock is empty");
+            } else {
+                throw new ResourceNotFound(found.getName() + " stock is not enough");
             }
         }).collect(Collectors.toList());
-        resolvedMaterials.forEach(materialRepository::save);
+
+        materialRepository.saveAll(resolvedMaterials);
         order.setMaterials(resolvedMaterials);
 
         order.calculateTotal();
         order.setId(Util.generateRandomId());
         order.setName(Util.generateRandomString(7));
         orderRepository.save(order);
-
 
         if (customer.getOrders() == null) {
             customer.setOrders(new ArrayList<>());
@@ -99,9 +105,11 @@ public class OrderServices {
 
         return customer.getOrders();
     }
-    public List<Order> getAllOrders(){
+
+    public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
+
     public List<OrderDetails> getAllOrdersDetail() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!(principal instanceof Customer)) {

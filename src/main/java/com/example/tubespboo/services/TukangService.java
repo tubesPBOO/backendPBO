@@ -116,7 +116,7 @@ public class TukangService extends UserServices {
 
         if (updateProfile.getPhoneNumber() != null) {
             if (tukangRepository.existsByPhoneNumber(updateProfile.getPhoneNumber())) {
-                throw new DuplicateResource(updateProfile.getEmail() + " already exist");
+                throw new DuplicateResource(updateProfile.getPhoneNumber() + " already exist");
             }
             tukang.setPhoneNumber(updateProfile.getPhoneNumber());
         }
