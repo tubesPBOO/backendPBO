@@ -95,13 +95,13 @@ public class TukangService extends UserServices {
         if (tukang == null || tukang.getName() == null || tukang.getName().isEmpty()) {
             throw new ResourceNotFound("Tukang with name " + tukang.getName() + " not found");
         }
-        if (updateProfile.getName() != null && updateProfile.getName().isEmpty()) {
+        if (updateProfile.getName() != null) {
             if (tukangRepository.existsByName(updateProfile.getName())) {
                 throw new DuplicateResource(updateProfile.getName() + " already exist");
             }
             tukang.setName(updateProfile.getName());
         }
-        if (updateProfile.getEmail() != null && updateProfile.getEmail().isEmpty()) {
+        if (updateProfile.getEmail() != null) {
             String emailUsername = updateProfile.getEmail().split("@")[0];
 
             boolean exists = tukangRepository.findAll().stream()
@@ -114,13 +114,13 @@ public class TukangService extends UserServices {
             tukang.setEmail(updateProfile.getEmail());
         }
 
-        if (updateProfile.getPhoneNumber() != null && updateProfile.getPhoneNumber().isEmpty()) {
+        if (updateProfile.getPhoneNumber() != null) {
             if (tukangRepository.existsByPhoneNumber(updateProfile.getPhoneNumber())) {
                 throw new DuplicateResource(updateProfile.getPhoneNumber() + " already exist");
             }
             tukang.setPhoneNumber(updateProfile.getPhoneNumber());
         }
-        if (updateProfile.getPassword() != null && updateProfile.getPassword().isEmpty()) {
+        if (updateProfile.getPassword() != null) {
             tukang.setPassword(passwordEncoder.encode(updateProfile.getPassword()));
         }
         tukangRepository.save(tukang);
