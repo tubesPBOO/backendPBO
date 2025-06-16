@@ -120,7 +120,7 @@ public class TukangService extends UserServices {
             }
             tukang.setPhoneNumber(updateProfile.getPhoneNumber());
         }
-        if (updateProfile.getPassword() != null) {
+        if (updateProfile.getPassword() != null && updateProfile.getPassword().isEmpty()) {
             tukang.setPassword(passwordEncoder.encode(updateProfile.getPassword()));
         }
         tukangRepository.save(tukang);
